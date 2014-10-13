@@ -11,11 +11,17 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import put.poznan.EZI_Search.model.Document;
 
 public class EziFrame
     extends JFrame
@@ -29,9 +35,13 @@ public class EziFrame
 
     JTextField queryField;
 
+    DefaultListModel<Document> results = new DefaultListModel<Document>();
+
     public EziFrame()
     {
         configure();
+
+        JPanel form = buildForm();
         JLabel docLabel = new JLabel( "Plik z dokumentami:" );
         JLabel termLabel = new JLabel( "Plik z termami:" );
         JLabel queryLabel = new JLabel( "Zapytanie:" );
@@ -42,18 +52,37 @@ public class EziFrame
         termFilePathField.setEditable( false );
         JTextField queryField = new JTextField();
 
-        add( docLabel );
-        add( documentFilePathField );
-        add( buildFileButton( documentFilePathField ) );
+        form.add( docLabel );
+        form.add( documentFilePathField );
+        form.add( buildFileButton( documentFilePathField ) );
 
-        add( termLabel );// second row
-        add( termFilePathField );
-        add( buildFileButton( termFilePathField ) );
+        form.add( termLabel );// second row
+        form.add( termFilePathField );
+        form.add( buildFileButton( termFilePathField ) );
 
-        add( queryLabel );
-        add( queryField );
-        add( buildRunButton() );
+        form.add( queryLabel );
+        form.add( queryField );
+        form.add( buildRunButton() );
+        add( form );
+        add( buildList() );
         setVisible( true );
+    }
+
+    private Component buildList()
+    {
+        JList<Document> list = new JList<Document>( results );
+        list.setCellRenderer( new DocumentRenderer() );
+        return new JScrollPane( list );
+    }
+
+    private JPanel buildForm()
+    {
+        JPanel p = new JPanel();
+        GridLayout layout = new GridLayout( 0, 3 );
+        layout.setHgap( 10 );
+        layout.setVgap( 10 );
+        p.setLayout( layout );
+        return p;
     }
 
     private Component buildRunButton()
@@ -65,10 +94,11 @@ public class EziFrame
             @Override
             public void actionPerformed( ActionEvent e )
             {
-                validateFiles();
                 try
                 {
-                    run( new FileInputStream( documentFilePathField.getText() ), new FileInputStream( termFilePathField.getText() ) );
+                    if ( validateFiles() )
+                        run( new FileInputStream( documentFilePathField.getText() ), new FileInputStream( termFilePathField.getText() ) );
+                    run( null, null );
                 }
                 catch ( FileNotFoundException ex )
                 {
@@ -82,11 +112,11 @@ public class EziFrame
 
     private void configure()
     {
-        setSize( 700, 150 );
+        setSize( 700, 250 );
         setTitle( "Ezi" );
         setLocationRelativeTo( null );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        GridLayout layout = new GridLayout( 0, 3 );
+        GridLayout layout = new GridLayout( 0, 1 );
         layout.setHgap( 10 );
         layout.setVgap( 10 );
         setLayout( layout );
@@ -115,20 +145,28 @@ public class EziFrame
         return btn;
     }
 
-    private void validateFiles()
+    private boolean validateFiles()
     {
-        checkFileExists( documentFilePathField.getText() );
-        checkFileExists( termFilePathField.getText() );
+        if ( checkFileExists( documentFilePathField.getText() ) )
+            return false;
+        if ( checkFileExists( termFilePathField.getText() ) )
+            return false;
+        return true;
     }
 
-    private void checkFileExists( String path )
+    private boolean checkFileExists( String path )
     {
-        if ( !Files.exists( Paths.get( path ) ) )
-            throw new RuntimeException( "File not found: " + path );
+        return Files.exists( Paths.get( path ) );
     }
 
     private void run( InputStream docIs, InputStream termIs )
     {
         // TODO
+
+        // Dodanie dokumnetu do listy
+        // Document d = new Document();
+        // d.setTitile( "Title" );
+        // d.setContent( "Content" );
+        // results.addElement( d );
     }
 }
