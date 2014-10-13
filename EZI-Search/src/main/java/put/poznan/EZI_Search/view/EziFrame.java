@@ -97,8 +97,8 @@ public class EziFrame
                 try
                 {
                     if ( validateFiles() )
-                        run( new FileInputStream( documentFilePathField.getText() ), new FileInputStream( termFilePathField.getText() ) );
-                    run( null, null );
+                        run( queryField.getText(), new FileInputStream( documentFilePathField.getText() ),
+                             new FileInputStream( termFilePathField.getText() ) );
                 }
                 catch ( FileNotFoundException ex )
                 {
@@ -159,7 +159,7 @@ public class EziFrame
         return Files.exists( Paths.get( path ) );
     }
 
-    private void run( InputStream docIs, InputStream termIs )
+    private void run( String query, InputStream docIs, InputStream termIs )
     {
         // TODO
 
