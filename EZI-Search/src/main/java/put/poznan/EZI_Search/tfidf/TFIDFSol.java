@@ -20,42 +20,45 @@ public class TFIDFSol {
     TreeMap<String, Set<Integer>> invertedFile = new TreeMap<String, Set<Integer>>(); // term -> docIds of docs containing the term
     Vector<TreeMap<String, Double>> tf = new Vector<TreeMap<String, Double>>(); // term x docId matrix with term frequencies
 
-    public static void main(String [] args) {
-    	TFIDFSol tfidf = new TFIDFSol();
-    	tfidf.go();
+    private String documentsFile;
+    private String keywordsFile;
+    private Query query;
+    
+    private static TFIDFSol sol;
+    
+    private TFIDFSol (){}
+    
+    public static TFIDFSol getInstance(){
+    	if(sol == null){
+    		sol = new TFIDFSol();
+    	}
+    	return sol;
     }
 
-    private void go() {
+    public void search() {
         // init the database
-        initDB("./documents");
+        initDB(this.documentsFile);
 
         // init global variables: tf, invertedFile, and idfs
         init();
 
         // print the database
-        printDB();
+//        printDB();
 
         // idfs and tfs
         System.out.println("IDFs:");
         // print the vocabulary
         printVoc();
-        
-        System.out.println("\nTFs for Equations:");
-        for (int i = 0; i < db.size(); i++)
-        {
-        	    System.out.println("Equations: doc " + i + " : " + getTF("Equations", i));
-        }
     
         // similarities for different queries
-        rank(new Query("Differential Equations"));
+        rank(this.query);
     }
 
     // inits database from textfile
-    private void initDB(String directory) {
-        db.clear();
+    private void initDB(String documentFile) {
         DocumentReader reader = DocumentReader.getInstance();
-        reader.setDocumentDirectory(directory);
-        db = reader.readDocuments();
+        reader.setDocumentFile(this.documentsFile);
+        db = reader.readDocumentsFromFile();
     }
 
     // lists the vocabulary
@@ -282,4 +285,30 @@ public class TFIDFSol {
             
         }
     }
+
+	public String getDocumentsFile() {
+		return documentsFile;
+	}
+
+	public void setDocumentsFile(String documentsFile) {
+		this.documentsFile = documentsFile;
+	}
+
+	public String getKeywordsFile() {
+		return keywordsFile;
+	}
+
+	public void setKeywordsFile(String keywordsFile) {
+		this.keywordsFile = keywordsFile;
+	}
+
+	public Query getQuery() {
+		return query;
+	}
+
+	public void setQuery(Query query) {
+		this.query = query;
+	}
+    
+    
 }

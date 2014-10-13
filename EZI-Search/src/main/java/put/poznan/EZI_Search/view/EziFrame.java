@@ -5,9 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -22,6 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import put.poznan.EZI_Search.model.Document;
+import put.poznan.EZI_Search.model.Query;
+import put.poznan.EZI_Search.tfidf.TFIDFSol;
 
 public class EziFrame
     extends JFrame
@@ -37,6 +36,11 @@ public class EziFrame
 
     DefaultListModel<Document> results = new DefaultListModel<Document>();
 
+    
+    public static void main(String[] args) {
+    	new EziFrame();
+	}
+    
     public EziFrame()
     {
         configure();
@@ -50,7 +54,7 @@ public class EziFrame
         documentFilePathField.setEditable( false );
         termFilePathField = new JTextField();
         termFilePathField.setEditable( false );
-        JTextField queryField = new JTextField();
+        queryField = new JTextField();
 
         form.add( docLabel );
         form.add( documentFilePathField );
@@ -91,19 +95,13 @@ public class EziFrame
         btn.addActionListener( new ActionListener()
         {
 
-            @Override
             public void actionPerformed( ActionEvent e )
             {
-                try
-                {
-                    if ( validateFiles() )
-                        run( queryField.getText(), new FileInputStream( documentFilePathField.getText() ),
-                             new FileInputStream( termFilePathField.getText() ) );
-                }
-                catch ( FileNotFoundException ex )
-                {
-                    throw new RuntimeException( ex );
-                }
+                if ( validateFiles() )
+//				    run( queryField.getText(), documentFilePathField.getText(),
+//				         termFilePathField.getText() );
+                	run( queryField.getText(), "c:/Users/Tomasz/git/EZI/EZI-Search/documents/docs.txt",
+                			"c:/Users/Tomasz/git/EZI/EZI-Search/keywords/keywords.txt" );
             }
 
         } );
@@ -129,7 +127,6 @@ public class EziFrame
         btn.addActionListener( new ActionListener()
         {
 
-            @Override
             public void actionPerformed( ActionEvent e )
             {
                 JFileChooser fileChooser = new JFileChooser();
@@ -147,22 +144,28 @@ public class EziFrame
 
     private boolean validateFiles()
     {
-        if ( checkFileExists( documentFilePathField.getText() ) )
-            return false;
-        if ( checkFileExists( termFilePathField.getText() ) )
-            return false;
+//        if ( checkFileExists( documentFilePathField.getText() ) )
+//            return false;
+//        if ( checkFileExists( termFilePathField.getText() ) )
+//            return false;
         return true;
     }
 
     private boolean checkFileExists( String path )
     {
-        return Files.exists( Paths.get( path ) );
+        return new File(path).exists();
     }
 
-    private void run( String query, InputStream docIs, InputStream termIs )
+    private void run( String query, String docIs, String termIs )
     {
         // TODO
 
+    	TFIDFSol sol = TFIDFSol.getInstance();
+    	sol.setDocumentsFile(docIs);
+    	sol.setQuery(new Query(query));
+    	
+    	sol.search();
+    	
         // Dodanie dokumnetu do listy
         // Document d = new Document();
         // d.setTitile( "Title" );

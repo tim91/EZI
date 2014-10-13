@@ -18,7 +18,6 @@ public class DocumentRenderer
 
     private static final long serialVersionUID = 1L;
 
-    @Override
     public Component getListCellRendererComponent( JList<? extends Document> list, Document value, int index, boolean isSelected, boolean cellHasFocus )
     {
         this.removeAll();

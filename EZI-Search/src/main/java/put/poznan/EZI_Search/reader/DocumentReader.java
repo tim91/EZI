@@ -12,74 +12,68 @@ import put.poznan.EZI_Search.model.Document;
 
 public class DocumentReader extends AbstractReader {
 
-	private static int counter = 1;
-	
-	private String documentDirectory;
-	
+	private static int counter = 0;
+
+	private String documentFile = null;
+
 	private String regexp = ".txt";
-	
+
 	private static DocumentReader docReader = null;
-	
-	public static DocumentReader getInstance(){
-		
-		if(docReader == null){
+
+	public static DocumentReader getInstance() {
+
+		if (docReader == null) {
 			docReader = new DocumentReader();
 		}
 		return docReader;
 	}
-	
-	private DocumentReader(){}
-	
-	public TreeMap<Integer,Document> readDocuments(){
+
+	private DocumentReader() {
+	}
+
+	public TreeMap<Integer, Document> readDocumentsFromFile() {
+
+		counter = 0;
 		
-		TreeMap<Integer,Document> docs = new TreeMap<Integer,Document>();
-		
-		List<File> files = getFiles(documentDirectory, regexp);
-		
-		for (File file : files) {
-			try {
-	            BufferedReader br = new BufferedReader(new FileReader(file));
-	            Document d = null;
-	            while (br.ready()) {
-	                String line = br.readLine().trim().replaceAll("[^a-zA-Z ]", "").toLowerCase();;
-	                if(line.length() == 0){
-	                	//new doc
-	                	docs.put(d.getId(),d);
-	                	d = null;
-	                	incrementCounter();
-	                }else{
-	                	if(d == null){
-	                		d = new Document();
-	                		d.setTitile(line);
-	                		d.setId(counter);
-	                		continue;
-	                	}
-	                	else{
-	                		d.addLineContent(line);
-	                	}
-	                }
-	            }
-	        } catch (FileNotFoundException e) {
-	            System.out.println("File not found");
-	            e.printStackTrace();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
+		TreeMap<Integer, Document> docs = new TreeMap<Integer, Document>();
+
+		File file = new File(this.documentFile);
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			Document d = null;
+			while (br.ready()) {
+				String line = br.readLine().trim().replaceAll("[^a-zA-Z ]", "")
+						.toLowerCase();
+				;
+				if (line.length() == 0) {
+					// new doc
+					docs.put(d.getId(), d);
+					d = null;
+					incrementCounter();
+				} else {
+					if (d == null) {
+						d = new Document();
+						d.setTitile(line);
+						d.setId(counter);
+						continue;
+					} else {
+						d.addLineContent(line);
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found");
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
+
 		return docs;
 	}
-	
-	private void incrementCounter(){
+
+	private void incrementCounter() {
 		counter++;
-	}
-
-	public String getDocumentDirectory() {
-		return documentDirectory;
-	}
-
-	public void setDocumentDirectory(String documentDirectory) {
-		this.documentDirectory = documentDirectory;
 	}
 
 	public String getRegexp() {
@@ -89,5 +83,13 @@ public class DocumentReader extends AbstractReader {
 	public void setRegexp(String regexp) {
 		this.regexp = regexp;
 	}
-	
+
+	public String getDocumentFile() {
+		return documentFile;
+	}
+
+	public void setDocumentFile(String documentFile) {
+		this.documentFile = documentFile;
+	}
+
 }

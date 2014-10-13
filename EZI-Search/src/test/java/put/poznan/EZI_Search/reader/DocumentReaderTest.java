@@ -9,15 +9,15 @@ import put.poznan.EZI_Search.model.Document;
 
 public class DocumentReaderTest {
 
-	private String dirLocation = "./documents";
+	private String fileLocation = "./documents/docs.txt";
 	
 	@Test
 	public void readDocuments(){
 		
 		DocumentReader dr = DocumentReader.getInstance();
-		dr.setDocumentDirectory(dirLocation);
-		
-		TreeMap<Integer, Document> docs = dr.readDocuments();
+		dr.setDocumentFile(fileLocation);
+		TreeMap<Integer, Document> docs = dr.readDocumentsFromFile();
+	
 		for (Document document : docs.values()) {
 			System.out.println(document.getTitile() + " " + document.getId());
 			System.out.println(document.getContent());
