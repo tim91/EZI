@@ -1,13 +1,24 @@
 package put.poznan.EZI_Search.tfidf;
 
-import java.util.*;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import put.poznan.EZI_Search.model.Document;
+import put.poznan.EZI_Search.reader.DocumentReader;
 
 public class TFIDFSol {
-    Vector<String> db = new Vector<String>(); // the document collection
+	
+    Vector<Document> db = new Vector<Document>(); // the document collection
     TreeMap<String, Double> idfs = new TreeMap<String, Double>(); // idf value for each term in the vocabulary
     TreeMap<String, Set<Integer>> invertedFile = new TreeMap<String, Set<Integer>>(); // term -> docIds of docs containing the term
     Vector<TreeMap<String, Double>> tf = new Vector<TreeMap<String, Double>>(); // term x docId matrix with term frequencies
@@ -19,7 +30,7 @@ public class TFIDFSol {
 
     private void go() {
         // init the database
-        initDB("db.txt");
+        initDB("./documents");
 
         // init global variables: tf, invertedFile, and idfs
         init();
@@ -43,20 +54,11 @@ public class TFIDFSol {
     }
 
     // inits database from textfile
-    private void initDB(String filename) {
+    private void initDB(String directory) {
         db.clear();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
-            while (br.ready()) {
-                String doc = br.readLine().trim();
-                db.add(doc);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("No database available.");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        DocumentReader reader = DocumentReader.getInstance();
+        reader.setDocumentDirectory(directory);
+        db = reader.readDocuments();
     }
 
     // lists the vocabulary
