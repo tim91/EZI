@@ -1,9 +1,5 @@
 package put.poznan.EZI_Search.tfidf;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -14,11 +10,12 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import put.poznan.EZI_Search.model.Document;
+import put.poznan.EZI_Search.model.Query;
 import put.poznan.EZI_Search.reader.DocumentReader;
 
 public class TFIDFSol {
 	
-    Vector<Document> db = new Vector<Document>(); // the document collection
+	TreeMap<Integer,Document> db = new TreeMap<Integer,Document>(); // the document collection
     TreeMap<String, Double> idfs = new TreeMap<String, Double>(); // idf value for each term in the vocabulary
     TreeMap<String, Set<Integer>> invertedFile = new TreeMap<String, Set<Integer>>(); // term -> docIds of docs containing the term
     Vector<TreeMap<String, Double>> tf = new Vector<TreeMap<String, Double>>(); // term x docId matrix with term frequencies
@@ -50,7 +47,7 @@ public class TFIDFSol {
         }
     
         // similarities for different queries
-        rank("Differential Equations");
+        rank(new Query("Differential Equations"));
     }
 
     // inits database from textfile
@@ -72,9 +69,10 @@ public class TFIDFSol {
     // lists the database
     private void printDB() {
         System.out.println("size of the database: " + db.size());
-        for (int i = 0; i < db.size(); i++) {
-            System.out.println("doc " + i + ": " + db.elementAt(i));
-        }
+        
+        for (Document doc : db.values()) {
+        	System.out.println("doc " + doc.getId() + ": " + doc.getTitile());
+		}
         System.out.println("");
     }
 
@@ -94,7 +92,10 @@ public class TFIDFSol {
         // TODO write the formula for computation of cosinus
         // note that v.values() is Collection<Double> that you may need to calculate length of the vector
         // take advantage of vecLength() function
-        return 1;
+        
+        double sim = sum / (vecLength(v1.values())*vecLength(v2.values()));
+        
+        return sim;
     }
 
     // returns the length of a vector
@@ -107,12 +108,12 @@ public class TFIDFSol {
     }
 
     // ranks a query to the documents of the database
-    private void rank(String query) {
+    private void rank(Query query) {
         System.out.println("");
         System.out.println("query = " + query);
 
         // get term frequencies for the query terms
-        TreeMap<String, Double> termFreqs = getTF(query);
+        TreeMap<String, Double> termFreqs = getTF(query.tokenize());
 
         // construct the query vector
         // the query vector
@@ -122,7 +123,10 @@ public class TFIDFSol {
         for (Map.Entry<String, Double> entry : termFreqs.entrySet()) {
             String term = entry.getKey();
             //TODO compute tfidf value for terms of query
-            double tfidf = 0;
+            
+            double idf = idf(term);
+            
+            double tfidf = idf * entry.getValue();
             queryVec.put(term, tfidf);
         }
 
@@ -162,7 +166,7 @@ public class TFIDFSol {
         // sort and print the scores
         Collections.sort(scores);
         for (DocScore docScore : scores) {
-            System.out.println("score of doc " + docScore.docId + " = " + docScore.score);
+            System.out.println(db.get(docScore.docId).getTitile() + "; " + docScore.score);
         }
     }
 
@@ -183,7 +187,7 @@ public class TFIDFSol {
             String term = entry.getKey();
             //TODO compute tfidf value for a given term
             //take advantage of idf() function
-            double tfidf = 0;
+            double tfidf = entry.getValue() * idf(term);
             vec.put(term, tfidf);
         }
         return vec;
@@ -196,13 +200,15 @@ public class TFIDFSol {
         else return freq;
     }
 
+    
     // calculates the term frequencies for a document
-    private TreeMap<String, Double> getTF(String doc) {
+    private TreeMap<String, Double> getTF(StringTokenizer tokenizedDoc) {
+    	
         TreeMap<String, Double> termFreqs = new TreeMap<String, Double>();
         double max = 0;
 
         // tokenize document
-        StringTokenizer st = new StringTokenizer(doc, " ");
+        StringTokenizer st = tokenizedDoc;
 
         // for all tokens
         while (st.hasMoreTokens()) {
@@ -221,18 +227,17 @@ public class TFIDFSol {
         // normalize tf
         for (Double tf : termFreqs.values()) {
         	//TODO write the formula for normalization of TF
-        	tf = 0.0;
+        	tf /= max;
         }
         return termFreqs;
     }
 
     // init tf, invertedFile, and idfs
     private void init() {
-        int docId = 0;
         // for all docs in the database
-        for (String doc : db) {
+        for (Document doc : db.values()) {
             // get the tfs for a doc
-            TreeMap<String, Double> termFreqs = getTF(doc);
+            TreeMap<String, Double> termFreqs = getTF(doc.tokenize());
 
             // add to global tf vector
             tf.add(termFreqs);
@@ -242,21 +247,39 @@ public class TFIDFSol {
                 // add the current docID to the posting list
                 Set<Integer> docIds = invertedFile.get(term);
                 if (docIds == null) docIds = new TreeSet<Integer>();
-                docIds.add(docId);
+                docIds.add(doc.getId());
                 invertedFile.put(term, docIds);
             }
-            docId++;
         }
 
         // calculate idfs
         int dbSize = db.size();
         // for all terms
+        
+        //Add keywords
+//        Vector<String> keywords = KeywordsReader.getInstance().getKeywords();
+//        
+//        for (String term : keywords) {
+//            // add the current docID to the posting list
+//            Set<Long> docIds = invertedFile.get(term);
+//            if (docIds == null) docIds = new TreeSet<Long>();
+//            
+//            //jezeli term nie wystepowal, to docIds bedzie puste.... przy idf bedzie dzielenie przez 0
+//            
+//            invertedFile.put(term, docIds);
+//        }
+        
+        
         for (Map.Entry<String, Set<Integer>> entry : invertedFile.entrySet()) {
             String term = entry.getKey();
             // get the size of the posting list, i.e. the document frequency
+            
             int df = entry.getValue().size();
-            //TODO write the formula for calculation of IDF 
-            idfs.put(term, 0.0);
+            //TODO write the formula for calculation of IDF    
+            double idf = Math.log(dbSize/df);
+            idfs.put(term, idf);
+            
+            
         }
     }
 }

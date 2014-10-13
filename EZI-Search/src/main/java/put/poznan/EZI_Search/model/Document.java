@@ -1,8 +1,12 @@
 package put.poznan.EZI_Search.model;
 
+import java.util.StringTokenizer;
+
+import put.poznan.EZI_Search.reader.StemmerStringTokenizer;
+
 public class Document {
 
-	private long id;
+	private int id;
 	
 	private String titile;
 	private String content;
@@ -11,18 +15,21 @@ public class Document {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Document(long id, String titile, String content) {
+	public Document(int id, String titile, String content) {
 		super();
 		this.id = id;
 		this.titile = titile;
 		this.content = content;
 	}
-	public long getId() {
+	
+	public int getId() {
 		return id;
 	}
-	public void setId(long id) {
+
+	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getTitile() {
 		return titile;
 	}
@@ -38,6 +45,11 @@ public class Document {
 	
 	public void addLineContent(String line){
 		this.content += " " + line;
+	}
+	
+	public StringTokenizer tokenize(){
+		
+		return new StemmerStringTokenizer(this.titile + " " + this.content, " ");
 	}
 	
 }

@@ -6,13 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Vector;
+import java.util.TreeMap;
 
 import put.poznan.EZI_Search.model.Document;
 
 public class DocumentReader extends AbstractReader {
 
-	private static long counter = 1;
+	private static int counter = 1;
 	
 	private String documentDirectory;
 	
@@ -30,9 +30,9 @@ public class DocumentReader extends AbstractReader {
 	
 	private DocumentReader(){}
 	
-	public Vector<Document> readDocuments(){
+	public TreeMap<Integer,Document> readDocuments(){
 		
-		Vector<Document> docs = new Vector<Document>(10);
+		TreeMap<Integer,Document> docs = new TreeMap<Integer,Document>();
 		
 		List<File> files = getFiles(documentDirectory, regexp);
 		
@@ -41,10 +41,10 @@ public class DocumentReader extends AbstractReader {
 	            BufferedReader br = new BufferedReader(new FileReader(file));
 	            Document d = null;
 	            while (br.ready()) {
-	                String line = br.readLine().trim();
+	                String line = br.readLine().trim().replaceAll("[^a-zA-Z ]", "").toLowerCase();;
 	                if(line.length() == 0){
 	                	//new doc
-	                	docs.add(d);
+	                	docs.put(d.getId(),d);
 	                	d = null;
 	                	incrementCounter();
 	                }else{

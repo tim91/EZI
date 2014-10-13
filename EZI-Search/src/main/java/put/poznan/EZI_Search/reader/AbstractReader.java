@@ -4,8 +4,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import put.poznan.EZI_Search.Stemmer.Stemmer;
+
 public abstract class AbstractReader {
 
+	protected Stemmer stemmer;
+	
+	public AbstractReader() {
+		stemmer = new Stemmer();
+	}
+	
+	
 	protected List<File> getFiles(String baseDir, String suffix)
 	{	
 		File folder = new File(baseDir);
