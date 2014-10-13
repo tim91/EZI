@@ -5,8 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -20,6 +18,7 @@ import javax.swing.JTextField;
 
 import put.poznan.EZI_Search.model.Document;
 import put.poznan.EZI_Search.model.Query;
+import put.poznan.EZI_Search.model.SearchReport;
 import put.poznan.EZI_Search.tfidf.TFIDFSol;
 
 public class EziFrame
@@ -100,8 +99,8 @@ public class EziFrame
                 if ( validateFiles() )
 //				    run( queryField.getText(), documentFilePathField.getText(),
 //				         termFilePathField.getText() );
-                	run( queryField.getText(), "c:/Users/Tomasz/git/EZI/EZI-Search/documents/docs.txt",
-                			"c:/Users/Tomasz/git/EZI/EZI-Search/keywords/keywords.txt" );
+                	run( queryField.getText(), "./documents/docs.txt",
+                			"./keywords/keywords.txt" );
             }
 
         } );
@@ -164,8 +163,8 @@ public class EziFrame
     	sol.setDocumentsFile(docIs);
     	sol.setQuery(new Query(query));
     	
-    	sol.search();
-    	
+    	//TODO - tutaj jest lista wierszy z wynikami, wystarczy to wyswietlic
+    	SearchReport report = sol.search();
         // Dodanie dokumnetu do listy
         // Document d = new Document();
         // d.setTitile( "Title" );

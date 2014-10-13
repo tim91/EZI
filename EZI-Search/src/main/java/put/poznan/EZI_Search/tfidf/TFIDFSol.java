@@ -9,8 +9,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import put.poznan.EZI_Search.model.DocScore;
 import put.poznan.EZI_Search.model.Document;
 import put.poznan.EZI_Search.model.Query;
+import put.poznan.EZI_Search.model.SearchReport;
 import put.poznan.EZI_Search.reader.DocumentReader;
 
 public class TFIDFSol {
@@ -35,7 +37,7 @@ public class TFIDFSol {
     	return sol;
     }
 
-    public void search() {
+    public SearchReport search() {
         // init the database
         initDB(this.documentsFile);
 
@@ -51,7 +53,14 @@ public class TFIDFSol {
         printVoc();
     
         // similarities for different queries
-        rank(this.query);
+        Vector<DocScore> scores = rank(this.query);
+        
+        SearchReport r = new SearchReport();
+        for (DocScore docScore : scores) {
+            r.addReportLine(db.get(docScore.getDocId()).getTitile() + "; " + docScore.getScore());
+        }
+        
+        return r;
     }
 
     // inits database from textfile
@@ -111,7 +120,7 @@ public class TFIDFSol {
     }
 
     // ranks a query to the documents of the database
-    private void rank(Query query) {
+    private Vector<DocScore> rank(Query query) {
         System.out.println("");
         System.out.println("query = " + query);
 
@@ -133,24 +142,6 @@ public class TFIDFSol {
             queryVec.put(term, tfidf);
         }
 
-        // helper class to store a docId and its score
-        class DocScore implements Comparable<DocScore> {
-            double score;
-            int docId;
-
-            public DocScore(double score, int docId) {
-                this.score = score;
-                this.docId = docId;
-            }
-
-            public int compareTo(DocScore docScore) {
-                if (score > docScore.score) return -1;
-                if (score < docScore.score) return 1;
-                return 0;
-            }
-        }
-
-
         Set<Integer> union;
         TreeSet<String> queryTerms = new TreeSet<String>(termFreqs.keySet());
 
@@ -166,11 +157,11 @@ public class TFIDFSol {
             scores.add(new DocScore(similarity(queryVec, getDocVec(i)), i));
         }
 
+        
         // sort and print the scores
         Collections.sort(scores);
-        for (DocScore docScore : scores) {
-            System.out.println(db.get(docScore.docId).getTitile() + "; " + docScore.score);
-        }
+        
+        return scores;
     }
 
     // returns the idf of a term
