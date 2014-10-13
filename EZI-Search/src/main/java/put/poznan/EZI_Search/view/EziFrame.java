@@ -27,16 +27,20 @@ public class EziFrame
 
     JTextField termFilePathField;
 
+    JTextField queryField;
+
     public EziFrame()
     {
         configure();
         JLabel docLabel = new JLabel( "Plik z dokumentami:" );
         JLabel termLabel = new JLabel( "Plik z termami:" );
+        JLabel queryLabel = new JLabel( "Zapytanie:" );
 
         documentFilePathField = new JTextField();
         documentFilePathField.setEditable( false );
         termFilePathField = new JTextField();
         termFilePathField.setEditable( false );
+        JTextField queryField = new JTextField();
 
         add( docLabel );
         add( documentFilePathField );
@@ -46,13 +50,15 @@ public class EziFrame
         add( termFilePathField );
         add( buildFileButton( termFilePathField ) );
 
+        add( queryLabel );
+        add( queryField );
         add( buildRunButton() );
         setVisible( true );
     }
 
     private Component buildRunButton()
     {
-        JButton btn = new JButton( "Start" );
+        JButton btn = new JButton( "Szukaj" );
         btn.addActionListener( new ActionListener()
         {
 
