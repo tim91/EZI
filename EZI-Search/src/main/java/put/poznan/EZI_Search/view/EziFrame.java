@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import put.poznan.EZI_Search.model.Document;
 import put.poznan.EZI_Search.model.Query;
 import put.poznan.EZI_Search.model.SearchReport;
 import put.poznan.EZI_Search.tfidf.TFIDFSol;
@@ -65,15 +66,53 @@ public class EziFrame
         form.add( queryLabel );
         form.add( queryField );
         form.add( buildRunButton() );
+        form.add( buildKeysButton() );
+        form.add( buildDocsButton() );
         add( form );
         add( buildList() );
         setVisible( true );
     }
 
+    private Component buildKeysButton()
+    {
+        JButton btn = new JButton( "Pokaż klucze" );
+        btn.addActionListener( new ActionListener()
+        {
+
+            public void actionPerformed( ActionEvent e )
+            {
+                results.clear();
+                for(String key:TFIDFSol.getInstance().getKeywords()){
+                    results.addElement( key );
+                }
+                
+            }
+
+        } );
+        return btn;
+    }
+    private Component buildDocsButton()
+    {
+        JButton btn = new JButton( "Pokaż dokumenty" );
+        btn.addActionListener( new ActionListener()
+        {
+
+            public void actionPerformed( ActionEvent e )
+            {
+                results.clear();
+                for(Document d:TFIDFSol.getInstance().getDb().values()){
+                    results.addElement( d.getTitile()+" "+d.getContent() );
+                }
+                
+            }
+
+        } );
+        return btn;
+    }
+
     private Component buildList()
     {
         JList<String> list = new JList<String>( results );
-//        list.setCellRenderer( new DocumentRenderer() );
         return new JScrollPane( list );
     }
 
@@ -95,7 +134,6 @@ public class EziFrame
 
             public void actionPerformed( ActionEvent e )
             {
-                if ( validateFiles() )
 //				    run( queryField.getText(), documentFilePathField.getText(),
 //				         termFilePathField.getText() );
                 	run( queryField.getText(), "./documents/docs.txt",
@@ -108,7 +146,7 @@ public class EziFrame
 
     private void configure()
     {
-        setSize( 700, 250 );
+        setSize( 700, 350 );
         setTitle( "Ezi" );
         setLocationRelativeTo( null );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -140,38 +178,20 @@ public class EziFrame
         return btn;
     }
 
-    private boolean validateFiles()
-    {
-//        if ( checkFileExists( documentFilePathField.getText() ) )
-//            return false;
-//        if ( checkFileExists( termFilePathField.getText() ) )
-//            return false;
-        return true;
-    }
-
-    private boolean checkFileExists( String path )
-    {
-        return new File(path).exists();
-    }
 
     private void run( String query, String docIs, String termIs )
     {
-        // TODO
-
     	TFIDFSol sol = TFIDFSol.getInstance();
     	sol.setDocumentsFile(docIs);
     	sol.setKeywordsFile(termIs);
     	sol.setQuery(new Query(query));
     	
-    	//TODO - tutaj jest lista wierszy z wynikami, wystarczy to wyswietlic
     	SearchReport report = sol.search();
     	report.printReport();
     	
     	results.clear();
-//         Dodanie dokumnetu do listy
     	for(String doc:report.getReport().split( "\n" )){
             results.addElement( doc );   
     	}
-        
     }
 }

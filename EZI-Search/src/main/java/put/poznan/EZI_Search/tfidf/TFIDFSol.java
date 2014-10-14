@@ -30,6 +30,16 @@ public class TFIDFSol {
     private String keywordsFile;
     private Query query;
     
+    public TreeMap<Integer, Document> getDb()
+    {
+        return db;
+    }
+
+    public Vector<String> getKeywords()
+    {
+        return keywords;
+    }
+
     private static TFIDFSol sol;
     
     private TFIDFSol (){}
@@ -63,7 +73,7 @@ public class TFIDFSol {
         
         SearchReport r = new SearchReport();
         for (DocScore docScore : scores) {
-            r.addReportLine(db.get(docScore.getDocId()).getTitile() + "; " + docScore.getScore());
+            r.addReportLine(db.get(docScore.getDocId()).getOrginalTitle() + "; " + docScore.getScore());
         }
         
         return r;
@@ -300,7 +310,7 @@ public class TFIDFSol {
             // get the size of the posting list, i.e. the document frequency
             
             int df = entry.getValue().size();
-            //TODO write the formula for calculation of IDF    
+            //TODO write the formula for calculation of IDF  
             double idf = Math.log10((dbSize/df));
             idfs.put(term, idf);
             

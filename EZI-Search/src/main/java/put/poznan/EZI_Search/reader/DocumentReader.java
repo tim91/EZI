@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.TreeMap;
 
 import put.poznan.EZI_Search.model.Document;
@@ -47,7 +46,7 @@ public class DocumentReader extends AbstractReader {
 				if(line.contains("Conference")){
 					System.out.println();
 				}
-				
+				String org=new String(line);
 				line = line.trim().replaceAll("[^a-zA-Z ]", "")
 						.toLowerCase();
 				;
@@ -60,6 +59,7 @@ public class DocumentReader extends AbstractReader {
 					if (d == null) {
 						d = new Document();
 						d.setTitile(line);
+						d.setOrginalTitle(org);
 						d.setId(counter);
 						continue;
 					} else {

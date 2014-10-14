@@ -9,6 +9,7 @@ public class Document {
 	private int id;
 	
 	private String titile;
+	private String orginalTitle;
 	private String content="";
 	
 	public Document() {
@@ -56,5 +57,15 @@ public class Document {
 	public String toString() {
 		return this.titile;
 	}
+
+    public String getOrginalTitle()
+    {
+        return orginalTitle;
+    }
+
+    public void setOrginalTitle( String orginalTitle )
+    {
+        this.orginalTitle = orginalTitle;
+    }
 	
 }
