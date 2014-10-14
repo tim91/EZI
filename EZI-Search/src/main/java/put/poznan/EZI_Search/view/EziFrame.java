@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import put.poznan.EZI_Search.model.Document;
 import put.poznan.EZI_Search.model.Query;
 import put.poznan.EZI_Search.model.SearchReport;
 import put.poznan.EZI_Search.tfidf.TFIDFSol;
@@ -33,7 +32,7 @@ public class EziFrame
 
     JTextField queryField;
 
-    DefaultListModel<Document> results = new DefaultListModel<Document>();
+    DefaultListModel<String> results = new DefaultListModel<String>();
 
     
     public static void main(String[] args) {
@@ -73,8 +72,8 @@ public class EziFrame
 
     private Component buildList()
     {
-        JList<Document> list = new JList<Document>( results );
-        list.setCellRenderer( new DocumentRenderer() );
+        JList<String> list = new JList<String>( results );
+//        list.setCellRenderer( new DocumentRenderer() );
         return new JScrollPane( list );
     }
 
@@ -167,10 +166,12 @@ public class EziFrame
     	//TODO - tutaj jest lista wierszy z wynikami, wystarczy to wyswietlic
     	SearchReport report = sol.search();
     	report.printReport();
-        // Dodanie dokumnetu do listy
-        // Document d = new Document();
-        // d.setTitile( "Title" );
-        // d.setContent( "Content" );
-        // results.addElement( d );	
+    	
+    	results.clear();
+//         Dodanie dokumnetu do listy
+    	for(String doc:report.getReport().split( "\n" )){
+            results.addElement( doc );   
+    	}
+        
     }
 }
