@@ -161,14 +161,16 @@ public class EziFrame
 
     	TFIDFSol sol = TFIDFSol.getInstance();
     	sol.setDocumentsFile(docIs);
+    	sol.setKeywordsFile(termIs);
     	sol.setQuery(new Query(query));
     	
     	//TODO - tutaj jest lista wierszy z wynikami, wystarczy to wyswietlic
     	SearchReport report = sol.search();
+    	report.printReport();
         // Dodanie dokumnetu do listy
         // Document d = new Document();
         // d.setTitile( "Title" );
         // d.setContent( "Content" );
-        // results.addElement( d );
+        // results.addElement( d );	
     }
 }

@@ -14,11 +14,13 @@ import put.poznan.EZI_Search.model.Document;
 import put.poznan.EZI_Search.model.Query;
 import put.poznan.EZI_Search.model.SearchReport;
 import put.poznan.EZI_Search.reader.DocumentReader;
+import put.poznan.EZI_Search.reader.KeywordsReader;
 
 public class TFIDFSol {
 	
 	TreeMap<Integer,Document> db = new TreeMap<Integer,Document>(); // the document collection
     TreeMap<String, Double> idfs = new TreeMap<String, Double>(); // idf value for each term in the vocabulary
+    Vector<String> keywords = new Vector<String>();
     TreeMap<String, Set<Integer>> invertedFile = new TreeMap<String, Set<Integer>>(); // term -> docIds of docs containing the term
     Vector<TreeMap<String, Double>> tf = new Vector<TreeMap<String, Double>>(); // term x docId matrix with term frequencies
 
@@ -41,6 +43,8 @@ public class TFIDFSol {
         // init the database
         initDB(this.documentsFile);
 
+        initKeywords(this.keywordsFile);
+        
         // init global variables: tf, invertedFile, and idfs
         init();
 
@@ -63,7 +67,16 @@ public class TFIDFSol {
         return r;
     }
 
-    // inits database from textfile
+    private void initKeywords(String keywordsFile) {
+		// TODO Auto-generated method stub
+
+    	//read keywords
+    	KeywordsReader kr = KeywordsReader.getInstance();
+    	kr.setKeywordFile(keywordsFile);
+    	keywords = kr.readKeywordsFromFile();
+	}
+
+	// inits database from textfile
     private void initDB(String documentFile) {
         DocumentReader reader = DocumentReader.getInstance();
         reader.setDocumentFile(this.documentsFile);
@@ -166,6 +179,8 @@ public class TFIDFSol {
 
     // returns the idf of a term
     private double idf(String term) {
+    	if(term == null)
+    		System.out.println();
         return idfs.get(term);
     }
 
@@ -213,7 +228,12 @@ public class TFIDFSol {
             if (count == null) {
                 count = new Double(0);
             }
-            count++;
+            
+            //check if term exits in keywords vector
+            if(this.keywords.contains(term)){
+            	count++;
+            }
+            
             termFreqs.put(term, count);
             if (count > max) max = count;
         }
@@ -228,11 +248,12 @@ public class TFIDFSol {
 
     // init tf, invertedFile, and idfs
     private void init() {
+    	
         // for all docs in the database
         for (Document doc : db.values()) {
             // get the tfs for a doc
             TreeMap<String, Double> termFreqs = getTF(doc.tokenize());
-
+            
             // add to global tf vector
             tf.add(termFreqs);
 

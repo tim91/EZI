@@ -43,7 +43,12 @@ public class DocumentReader extends AbstractReader {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			Document d = null;
 			while (br.ready()) {
-				String line = br.readLine().trim().replaceAll("[^a-zA-Z ]", "")
+				String line = br.readLine();
+				if(line.contains("Conference")){
+					System.out.println();
+				}
+				
+				line = line.trim().replaceAll("[^a-zA-Z ]", "")
 						.toLowerCase();
 				;
 				if (line.length() == 0) {

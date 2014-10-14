@@ -52,4 +52,9 @@ public class Document {
 		return new StemmerStringTokenizer(this.titile + " " + this.content, " ");
 	}
 	
+	@Override
+	public String toString() {
+		return this.titile;
+	}
+	
 }

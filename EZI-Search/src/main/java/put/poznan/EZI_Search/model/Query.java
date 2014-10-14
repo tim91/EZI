@@ -24,4 +24,9 @@ public class Query {
 	public StringTokenizer tokenize(){
 		return new StemmerStringTokenizer(this.query, " ");
 	}
+	
+	@Override
+	public String toString() {
+		return this.query;
+	}
 }

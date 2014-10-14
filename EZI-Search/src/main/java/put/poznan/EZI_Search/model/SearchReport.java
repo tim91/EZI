@@ -24,5 +24,9 @@ public class SearchReport {
 	public void addReportLine(String line) {
 		this.report += line + "\n";
 	}
+	
+	public void printReport(){
+		System.out.println(this.report);
+	}
 
 }
