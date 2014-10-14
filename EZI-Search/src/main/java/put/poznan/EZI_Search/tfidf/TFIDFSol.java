@@ -131,8 +131,10 @@ public class TFIDFSol {
         // TODO write the formula for computation of cosinus
         // note that v.values() is Collection<Double> that you may need to calculate length of the vector
         // take advantage of vecLength() function
-        
-        double sim = sum / (vecLength(v1.values())*vecLength(v2.values()));
+        double d=(vecLength(v1.values())*vecLength(v2.values()));
+        double sim=0;
+        if(d!=0)
+         sim = sum / d;
         
         return sim;
     }
