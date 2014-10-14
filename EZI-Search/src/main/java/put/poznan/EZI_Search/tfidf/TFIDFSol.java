@@ -232,10 +232,11 @@ public class TFIDFSol {
             //check if term exits in keywords vector
             if(this.keywords.contains(term)){
             	count++;
+            	termFreqs.put(term, count);
+                if (count > max) max = count;
             }
             
-            termFreqs.put(term, count);
-            if (count > max) max = count;
+            
         }
 
         // normalize tf
@@ -270,19 +271,6 @@ public class TFIDFSol {
         // calculate idfs
         int dbSize = db.size();
         // for all terms
-        
-        //Add keywords
-//        Vector<String> keywords = KeywordsReader.getInstance().getKeywords();
-//        
-//        for (String term : keywords) {
-//            // add the current docID to the posting list
-//            Set<Long> docIds = invertedFile.get(term);
-//            if (docIds == null) docIds = new TreeSet<Long>();
-//            
-//            //jezeli term nie wystepowal, to docIds bedzie puste.... przy idf bedzie dzielenie przez 0
-//            
-//            invertedFile.put(term, docIds);
-//        }
         
         
         for (Map.Entry<String, Set<Integer>> entry : invertedFile.entrySet()) {
