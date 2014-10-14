@@ -2,7 +2,7 @@ package put.poznan.EZI_Search.model;
 
 public class SearchReport {
 
-	private String report;
+	private String report="";
 
 	public SearchReport() {
 		// TODO Auto-generated constructor stub

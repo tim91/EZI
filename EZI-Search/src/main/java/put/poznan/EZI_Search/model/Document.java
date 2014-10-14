@@ -9,7 +9,7 @@ public class Document {
 	private int id;
 	
 	private String titile;
-	private String content;
+	private String content="";
 	
 	public Document() {
 		// TODO Auto-generated constructor stub

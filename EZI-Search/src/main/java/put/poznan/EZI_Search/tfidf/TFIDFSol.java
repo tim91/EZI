@@ -15,6 +15,7 @@ import put.poznan.EZI_Search.model.Query;
 import put.poznan.EZI_Search.model.SearchReport;
 import put.poznan.EZI_Search.reader.DocumentReader;
 import put.poznan.EZI_Search.reader.KeywordsReader;
+import put.poznan.EZI_Search.reader.StemmerStringTokenizer;
 
 public class TFIDFSol {
 	
@@ -74,7 +75,19 @@ public class TFIDFSol {
     	KeywordsReader kr = KeywordsReader.getInstance();
     	kr.setKeywordFile(keywordsFile);
     	keywords = kr.readKeywordsFromFile();
+    	tokenizeKeywords();
 	}
+
+    private void tokenizeKeywords()
+    {
+        Vector<String> tokenizedKeywords=new Vector<String>();
+    	for ( String keyword : keywords )
+        {
+            String tokenizedKeyword=new StemmerStringTokenizer( keyword, " " ).nextToken();
+            tokenizedKeywords.add( tokenizedKeyword );
+        }
+    	keywords=tokenizedKeywords;
+    }
 
 	// inits database from textfile
     private void initDB(String documentFile) {
@@ -103,7 +116,7 @@ public class TFIDFSol {
 
     // calculates the similarity between two vectors
     // each vector is a term -> weight map
-    private double similarity(TreeMap<String, Double> v1, TreeMap<String, Double> v2) {
+    public double similarity(TreeMap<String, Double> v1, TreeMap<String, Double> v2) {
         double sum = 0;
         // iterate through one vector
         for (Map.Entry<String, Double> entry : v1.entrySet()) {
@@ -240,9 +253,10 @@ public class TFIDFSol {
         }
 
         // normalize tf
-        for (Double tf : termFreqs.values()) {
-        	//TODO write the formula for normalization of TF
+        for (String key : termFreqs.keySet()) {
+            Double tf=termFreqs.get( key );
         	tf /= max;
+        	termFreqs.put( key, tf );
         }
         return termFreqs;
     }
@@ -279,7 +293,7 @@ public class TFIDFSol {
             
             int df = entry.getValue().size();
             //TODO write the formula for calculation of IDF    
-            double idf = Math.log(dbSize/df);
+            double idf = Math.log10((dbSize/df));
             idfs.put(term, idf);
             
             
