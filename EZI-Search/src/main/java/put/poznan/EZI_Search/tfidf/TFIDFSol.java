@@ -2,6 +2,7 @@ package put.poznan.EZI_Search.tfidf;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -172,9 +173,14 @@ public class TFIDFSol {
         TreeSet<String> queryTerms = new TreeSet<String>(termFreqs.keySet());
 
         // from the inverted file get the union of all docIDs that contain any query term
-        union = invertedFile.get(queryTerms.first());
-        for (String term : queryTerms) {
-            union.addAll(invertedFile.get(term));
+        if(!queryTerms.isEmpty()){
+        
+            union = invertedFile.get(queryTerms.first());
+            for (String term : queryTerms) {
+                union.addAll(invertedFile.get(term));
+            }
+        }else{
+            union=new HashSet<Integer>();
         }
 
         // calculate the scores of documents in the union
