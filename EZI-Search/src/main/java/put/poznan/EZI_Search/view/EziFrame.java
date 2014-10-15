@@ -136,8 +136,8 @@ public class EziFrame
             {
 //				    run( queryField.getText(), documentFilePathField.getText(),
 //				         termFilePathField.getText() );
-                	run( queryField.getText(), "./documents/docs.txt",
-                			"./keywords/keywords.txt" );
+                	run( queryField.getText(), "./documents/docs2.txt",
+                			"./keywords/keyw2.txt" );
             }
 
         } );

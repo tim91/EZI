@@ -26,7 +26,7 @@ public class SearchTest
     @Test
     public void test()
     {
-        String query = "machine";
+        String query = "artificial intelligence";
         TFIDFSol sol = TFIDFSol.getInstance();
         sol.setDocumentsFile( buildTempFilePath( "docs.txt" ) );
         sol.setKeywordsFile( buildTempFilePath( "keywords.txt" ) );

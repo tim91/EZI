@@ -301,7 +301,7 @@ public class TFIDFSol {
         }
 
         // calculate idfs
-        int dbSize = db.size();
+        double dbSize = db.size();
         // for all terms
         
         
@@ -309,9 +309,9 @@ public class TFIDFSol {
             String term = entry.getKey();
             // get the size of the posting list, i.e. the document frequency
             
-            int df = entry.getValue().size();
+            double df = entry.getValue().size();
             //TODO write the formula for calculation of IDF  
-            double idf = Math.log10((dbSize/df));
+            double idf = Math.log((dbSize/df));
             idfs.put(term, idf);
             
             
