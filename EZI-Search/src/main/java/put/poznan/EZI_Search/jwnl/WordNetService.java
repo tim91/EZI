@@ -19,7 +19,6 @@ import net.sf.extjwnl.data.list.PointerTargetNodeList;
 import net.sf.extjwnl.data.relationship.RelationshipFinder;
 import net.sf.extjwnl.dictionary.Dictionary;
 import put.poznan.EZI_Search.model.ExtendedQuery;
-import put.poznan.EZI_Search.model.Query;
 import put.poznan.EZI_Search.model.RelationshipScore;
 
 public class WordNetService {
@@ -283,7 +282,9 @@ public class WordNetService {
 				RelationshipScore rs = rels.get(i);
 				//extend query
 				ExtendedQuery eq = extended.get(i);
-				
+				if(rs.target.getLemma().contains( eq.query )){
+				    eq.query=rs.target.getLemma();
+				}else
 				eq.query += " " + rs.target.getLemma();
 				eq.summaryRelatioship += rs.relationship;
 				
