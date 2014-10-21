@@ -1,5 +1,7 @@
 package put.poznan.EZI_Search.jwnl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -9,17 +11,16 @@ import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.IndexWordSet;
 import net.sf.extjwnl.data.POS;
-import net.sf.extjwnl.data.PointerType;
 import net.sf.extjwnl.data.PointerUtils;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.Word;
 import net.sf.extjwnl.data.list.PointerTargetNode;
 import net.sf.extjwnl.data.list.PointerTargetNodeList;
-import net.sf.extjwnl.data.relationship.AsymmetricRelationship;
-import net.sf.extjwnl.data.relationship.Relationship;
 import net.sf.extjwnl.data.relationship.RelationshipFinder;
-import net.sf.extjwnl.data.relationship.RelationshipList;
 import net.sf.extjwnl.dictionary.Dictionary;
+import put.poznan.EZI_Search.model.ExtendedQuery;
+import put.poznan.EZI_Search.model.Query;
+import put.poznan.EZI_Search.model.RelationshipScore;
 
 public class WordNetService {
 
@@ -213,37 +214,111 @@ public class WordNetService {
 		}
 	}
 
-	public void demonstrateSymmetricRelationshipOperation(IndexWord start,
-			IndexWord end) throws JWNLException, CloneNotSupportedException {
-		// find all synonyms that <var>start</var> and <var>end</var> have in
-		// common
-		RelationshipList list = RelationshipFinder.findRelationships(start
-				.getSenses().get(0), end.getSenses().get(0),
-				PointerType.SIMILAR_TO);
-		System.out.println("Synonym relationship between \"" + start.getLemma()
-				+ "\" and \"" + end.getLemma() + "\":");
-		for (Object aList : list) {
-			((Relationship) aList).getNodeList().print();
+//	public void demonstrateSymmetricRelationshipOperation(IndexWord start,
+//			IndexWord end) throws JWNLException, CloneNotSupportedException {
+//		// find all synonyms that <var>start</var> and <var>end</var> have in
+//		// common
+//		RelationshipList list = RelationshipFinder.findRelationships(start
+//				.getSenses().get(0), end.getSenses().get(0),
+//				PointerType.SIMILAR_TO);
+//		System.out.println("Synonym relationship between \"" + start.getLemma()
+//				+ "\" and \"" + end.getLemma() + "\":");
+//		for (Object aList : list) {
+//			((Relationship) aList).getNodeList().print();
+//		}
+//		System.out.println("Depth: " + list.get(0).getDepth());
+//	}
+//
+//	public void demonstrateAsymmetricRelationshipOperation(IndexWord start,
+//			IndexWord end) throws JWNLException, CloneNotSupportedException {
+//		// Try to find a relationship between the first sense of
+//		// <var>start</var> and the first sense of <var>end</var>
+//		RelationshipList list = RelationshipFinder.findRelationships(start
+//				.getSenses().get(0), end.getSenses().get(0),
+//				PointerType.HYPERNYM);
+//		System.out.println("Hypernym relationship between \""
+//				+ start.getLemma() + "\" and \"" + end.getLemma() + "\":");
+//		for (Object aList : list) {
+//			((Relationship) aList).getNodeList().print();
+//		}
+//		System.out
+//				.println("Common Parent Index: "
+//						+ ((AsymmetricRelationship) list.get(0))
+//								.getCommonParentIndex());
+//		System.out.println("Depth: " + list.get(0).getDepth());
+//	}
+	
+	
+	public List<ExtendedQuery> getExtendQueries(){
+		String q = "artificial intelligence";
+		
+		List<ExtendedQuery> list = getBestSynonymQueries(q, 10);
+		for (ExtendedQuery query : list) {
+			System.out.println(query);
 		}
-		System.out.println("Depth: " + list.get(0).getDepth());
+		
+		return list;
 	}
-
-	public void demonstrateAsymmetricRelationshipOperation(IndexWord start,
-			IndexWord end) throws JWNLException, CloneNotSupportedException {
-		// Try to find a relationship between the first sense of
-		// <var>start</var> and the first sense of <var>end</var>
-		RelationshipList list = RelationshipFinder.findRelationships(start
-				.getSenses().get(0), end.getSenses().get(0),
-				PointerType.HYPERNYM);
-		System.out.println("Hypernym relationship between \""
-				+ start.getLemma() + "\" and \"" + end.getLemma() + "\":");
-		for (Object aList : list) {
-			((Relationship) aList).getNodeList().print();
+	
+	public List<ExtendedQuery> getBestSynonymQueries(String q, int best){
+		
+		String[] elems = q.split(" ");
+		
+		List<ExtendedQuery> extended = new ArrayList<ExtendedQuery>(best);
+		
+		for(int j=0; j< best; j++){
+			ExtendedQuery eq = new ExtendedQuery();
+			eq.query = q;
+			extended.add(eq);
 		}
-		System.out
-				.println("Common Parent Index: "
-						+ ((AsymmetricRelationship) list.get(0))
-								.getCommonParentIndex());
-		System.out.println("Depth: " + list.get(0).getDepth());
+		
+		for (String elem : elems) {
+			
+			List<RelationshipScore> rels = getSynonymsSortedByRelationship(elem);
+//			System.out.println(rels);
+			
+			int iters = best > rels.size() ? rels.size() : best;
+			
+			for(int i=0 ; i< iters; i++){
+				RelationshipScore rs = rels.get(i);
+				//extend query
+				ExtendedQuery eq = extended.get(i);
+				
+				eq.query += " " + rs.target.getLemma();
+				eq.summaryRelatioship += rs.relationship;
+				
+			}
+		}
+		
+		return extended;
+		
+	}
+	
+public List<RelationshipScore> getSynonymsSortedByRelationship(String lemma){
+		
+		List<RelationshipScore> relationship = new ArrayList<RelationshipScore>();
+		
+		IndexWordSet indexWords = getIndexWords(lemma);
+		
+		for (IndexWord word : indexWords.getIndexWordCollection()) {
+			Set<IndexWord> set = getSynonyms(word);
+			
+			for (IndexWord synonym : set) {
+				try {
+					int rel = RelationshipFinder.getImmediateRelationship(word, synonym);
+					RelationshipScore rs = new RelationshipScore();
+					rs.relationship = rel;
+					rs.source = word;
+					rs.target = synonym;
+					relationship.add(rs);
+				} catch (Exception e) {
+				}
+			}
+			
+		}
+		
+		Collections.sort(relationship);
+		
+		return relationship;
 	}
 }

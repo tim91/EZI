@@ -8,6 +8,6 @@ public class ExtendedQuery {
 	@Override
 	public String toString() {
 		
-		return query + " " + summaryRelatioship;
+		return query + " | summaryRelationship: " + summaryRelatioship;
 	}
 }

@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -19,7 +20,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import put.poznan.EZI_Search.jwnl.WordNetService;
 import put.poznan.EZI_Search.model.Document;
+import put.poznan.EZI_Search.model.ExtendedQuery;
 import put.poznan.EZI_Search.model.Query;
 import put.poznan.EZI_Search.model.SearchReport;
 import put.poznan.EZI_Search.tfidf.TFIDFSol;
@@ -37,7 +40,9 @@ public class EziFrame
     JTextField queryField;
 
     DefaultListModel<String> results = new DefaultListModel<String>();
-    DefaultListModel<String> queries = new DefaultListModel<String>();
+    DefaultListModel<ExtendedQuery> queries = new DefaultListModel<ExtendedQuery>();
+    
+    WordNetService ws = WordNetService.getInstance();
     
     public static void main(String[] args) {
     	new EziFrame();
@@ -84,14 +89,14 @@ public class EziFrame
         layout.setHgap( 10 );
         layout.setVgap( 10 );
         pnl.setLayout( layout );
-        JList<String> list = new JList<String>( queries );
+        JList<ExtendedQuery> list = new JList<ExtendedQuery>( queries );
         list.addMouseListener( new MouseAdapter(){
             public void mouseClicked(MouseEvent evt) {
                 @SuppressWarnings( "unchecked" )
-                JList<String> list = (JList<String>)evt.getSource();
+                JList<ExtendedQuery> list = (JList<ExtendedQuery>)evt.getSource();
                 if (evt.getClickCount() == 1) {
-                    String query=(String) list.getSelectedValue();
-                    queryField.setText( query );
+                	ExtendedQuery eq=(ExtendedQuery) list.getSelectedValue();
+                    queryField.setText( eq.query );
                 } 
             }
         });
@@ -173,8 +178,8 @@ public class EziFrame
             {
 //				    run( queryField.getText(), documentFilePathField.getText(),
 //				         termFilePathField.getText() );
-                	run( queryField.getText(), "./documents/docs2.txt",
-                			"./keywords/keyw2.txt" );
+                	run( queryField.getText(), "./documents/docs.txt",
+                			"./keywords/keywords.txt" );
             }
 
         } );
@@ -227,10 +232,17 @@ public class EziFrame
     	report.printReport();
     	
     	results.clear();
+    	queries.clear();
     	for(String doc:report.getReport().split( "\n" )){
             results.addElement( doc );   
     	}
     	//dodawanie elementu do listy zapytań
-    	//queries.addElement( "aasda" );
+    	
+    	List<ExtendedQuery> extendedQueries = ws.getBestSynonymQueries(query,5);
+    	
+    	for(int j=0; j < extendedQueries.size(); j++){
+    		queries.addElement( extendedQueries.get(j) );
+    	}
+    	
     }
 }
