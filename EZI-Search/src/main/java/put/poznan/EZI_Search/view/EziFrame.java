@@ -1,9 +1,12 @@
 package put.poznan.EZI_Search.view;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.DefaultListModel;
@@ -34,7 +37,7 @@ public class EziFrame
     JTextField queryField;
 
     DefaultListModel<String> results = new DefaultListModel<String>();
-
+    DefaultListModel<String> queries = new DefaultListModel<String>();
     
     public static void main(String[] args) {
     	new EziFrame();
@@ -69,13 +72,39 @@ public class EziFrame
         form.add( buildKeysButton() );
         form.add( buildDocsButton() );
         add( form );
+        add(buildQueries());
         add( buildList() );
         setVisible( true );
+    }
+
+    private Component buildQueries()
+    {
+        JPanel pnl=new JPanel();
+        BorderLayout layout = new BorderLayout();
+        layout.setHgap( 10 );
+        layout.setVgap( 10 );
+        pnl.setLayout( layout );
+        JList<String> list = new JList<String>( queries );
+        list.addMouseListener( new MouseAdapter(){
+            public void mouseClicked(MouseEvent evt) {
+                @SuppressWarnings( "unchecked" )
+                JList<String> list = (JList<String>)evt.getSource();
+                if (evt.getClickCount() == 1) {
+                    String query=(String) list.getSelectedValue();
+                    queryField.setText( query );
+                } 
+            }
+        });
+        pnl.add( new JLabel("Zapytania:"),BorderLayout.PAGE_START );
+        JScrollPane sp= new JScrollPane( list );
+        pnl.add( sp,BorderLayout.CENTER);
+        return pnl;
     }
 
     private Component buildKeysButton()
     {
         JButton btn = new JButton( "Pokaż klucze" );
+       
         btn.addActionListener( new ActionListener()
         {
 
@@ -112,8 +141,16 @@ public class EziFrame
 
     private Component buildList()
     {
+        JPanel pnl=new JPanel();
+        BorderLayout layout = new BorderLayout();
+        layout.setHgap( 10 );
+        layout.setVgap( 10 );
+        pnl.setLayout( layout );
         JList<String> list = new JList<String>( results );
-        return new JScrollPane( list );
+        pnl.add( new JLabel("Wyniki:"),BorderLayout.PAGE_START );
+        JScrollPane sp= new JScrollPane( list );
+        pnl.add( sp,BorderLayout.CENTER);
+        return pnl;
     }
 
     private JPanel buildForm()
@@ -146,7 +183,7 @@ public class EziFrame
 
     private void configure()
     {
-        setSize( 700, 350 );
+        setSize( 700, 450 );
         setTitle( "Ezi" );
         setLocationRelativeTo( null );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -193,5 +230,7 @@ public class EziFrame
     	for(String doc:report.getReport().split( "\n" )){
             results.addElement( doc );   
     	}
+    	//dodawanie elementu do listy zapytań
+    	//queries.addElement( "aasda" );
     }
 }
