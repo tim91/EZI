@@ -282,10 +282,14 @@ public class WordNetService {
 				RelationshipScore rs = rels.get(i);
 				//extend query
 				ExtendedQuery eq = extended.get(i);
-				if(rs.target.getLemma().contains( eq.query )){
-				    eq.query=rs.target.getLemma();
-				}else
-				eq.query += " " + rs.target.getLemma();
+				
+				String[] lemmas = rs.target.getLemma().split(" ");
+				
+				for (String lem : lemmas) {
+					if(!eq.query.contains(lem) && lem.length() > 0)
+						eq.query += " " + lem;
+				}
+				
 				eq.summaryRelatioship += rs.relationship;
 				
 			}

@@ -11,7 +11,7 @@ public class WordNetServiceTest {
 	
 	@Test
 	public void getExtendQuery(){
-		String q = "artificial intelligence";
+		String q = "access";
 		
 		WordNetService wns = WordNetService.getInstance();
 		
