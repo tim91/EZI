@@ -44,9 +44,7 @@ public class LSILab4 {
 	}
 
 	private void svd() {
-
-		// TODO implement your solution
-
+		
 		SingularValueDecomposition svd = new SingularValueDecomposition(M);
 		// get K, S, and D
 
@@ -59,7 +57,7 @@ public class LSILab4 {
 		System.out.println("D: " + dim(dMatrixT) + "\n");
 		
 		// set number of largest singular values to be considered
-		int s = 3;
+		int s = 4;
 
 		System.out.println("s: " + s + "\n");
 		
@@ -156,12 +154,6 @@ public class LSILab4 {
 				similarity.set(r, 0, val);
 				System.out.println("Doc " + (r+1) + ": " + val);
 			}
-			
-			
-			
-			// cosine measure
-			
-			
 			
 		}
 		else{
