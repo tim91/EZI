@@ -25,19 +25,19 @@ public class LSILab4 {
 
 	private void go() {
 		// init the matrix and the query
-		M = readMatrix("data/data.txt");
-		Q = readMatrix("data/query.txt");
+		M = readMatrix("data/data-test.txt");
+		Q = readMatrix("data/query-test.txt");
 
 		// print
 		System.out.println("Matrix:");
 		M.print(3, 2);
 
 		// print the dimensions of the matrix
-		System.out.println("M: " + dim(M));
+		System.out.println("M: " + dim(M) + "\n");
 		// print the query
 		System.out.println("Query:");
 		Q.print(3, 2);
-		System.out.println("Q: " + dim(Q));
+		System.out.println("Q: " + dim(Q) + "\n");
 
 		// do svd
 		svd();
@@ -52,13 +52,17 @@ public class LSILab4 {
 
 		Matrix sMatrix = svd.getS();
 		Matrix kMatrix = svd.getU();
-		Matrix dMatrixTransposed = svd.getV().transpose();
+		Matrix dMatrixT = svd.getV().transpose();
 		
-//		Matrix temp = kMatrix.times(sMatrix);
-//		Matrix temp1 = temp.times(dMatrixTranspose);
+		System.out.println("K: " + dim(kMatrix));
+		System.out.println("S: " + dim(sMatrix));
+		System.out.println("D: " + dim(dMatrixT) + "\n");
+		
 		// set number of largest singular values to be considered
-		int s = 4;
+		int s = 3;
 
+		System.out.println("s: " + s + "\n");
+		
 		//get dimension of S matrix
 		int size = sMatrix.getColumnDimension();
 		List<MatrixElement> dimensions = new ArrayList<MatrixElement>(size);
@@ -68,14 +72,103 @@ public class LSILab4 {
 		
 		Arrays.sort(dimensions.toArray());
 		
+		//in K matrix cut columns, in D matrix cut rows
 		
-		System.out.println();
-		// cut off appropriate columns and rows from K, S, and D
+		if(dimensions.size() > s){
+			
+			// cut off appropriate columns and rows from K, S, and D
+			int[] rows = new int[s];
+			int[] cols = new int[s];
+			for(int j = 0; j<s; j++){
+				rows[j] = dimensions.get(j).row;
+				cols[j] = dimensions.get(j).col;
+			}
+			Matrix sSubM = sMatrix.getMatrix(rows, cols);
+			
+			
+			
+			int[] kMatrixRowsTable = new int[kMatrix.getRowDimension()];
+			for(int r = 0;r < kMatrix.getRowDimension();r++){
+				kMatrixRowsTable[r] = r;
+			}
+			
+			Matrix kSubM = kMatrix.getMatrix(kMatrixRowsTable, cols);
+			
+			int[] dMatrixColsTable = new int[kMatrix.getColumnDimension()];
+			for(int c = 0;c < kMatrix.getColumnDimension();c++){
+				dMatrixColsTable[c] =c;
+			}
+			
+			Matrix dSubMT = dMatrixT.getMatrix(rows, dMatrixColsTable);
+			
+			System.out.print("KS: " + dim(kSubM));
+			kSubM.print(3, 2);
+			System.out.print("SS: " + dim(sSubM));
+			sSubM.print(3, 2);
+			System.out.print("DST: " + dim(dSubMT));
+			dSubMT.print(3, 2);
+			
+			
+			// transform the query vector
+			Matrix qTransformed = Q.transpose().times(kSubM);
+			
+			
+			Matrix sSubMInverted = sSubM.inverse();
+			
+			qTransformed = qTransformed.times(sSubMInverted);
+			
+			System.out.print("QS: " + dim(qTransformed));
+			qTransformed.print(3, 2);
+			
 
-		// transform the query vector
-
-		// compute similaraty of the query and each of the documents, using
-		// cosine measure
+			// compute similaraty of the query and each of the documents, using
+			Matrix dSubM = dSubMT.transpose();
+			Matrix lengthVectorOfDocs = new Matrix(dSubM.getRowDimension(), 1);
+			for(int r=0;r < dSubM.getRowDimension();r++){
+				double length = 0;
+				for(int c=0; c< dSubM.getColumnDimension(); c++){
+					length += Math.pow(dSubM.get(r, c),2.0); 
+				}
+				lengthVectorOfDocs.set(r, 0, Math.sqrt(length));
+			}
+			
+			double temp = 0;
+			for(int c=0;c<qTransformed.getColumnDimension();c++){
+				temp += Math.pow(qTransformed.get(0, c),2);
+			}
+			double lengthOfQuery = Math.sqrt(temp);
+			
+			Matrix multipleSumVector = new Matrix(dSubM.getRowDimension(), 1);
+			
+			for(int r=0;r < dSubM.getRowDimension();r++){
+				double tempSum=0;
+				for(int c=0; c< dSubM.getColumnDimension(); c++){
+					tempSum+= dSubM.get(r, c) * qTransformed.get(0, c);
+				}
+				multipleSumVector.set(r, 0, tempSum);
+			}
+			
+			System.out.println("Similarities:");
+			Matrix similarity = new Matrix(multipleSumVector.getRowDimension(),1);
+			//similatiry
+			for(int r=0; r< multipleSumVector.getRowDimension(); r++){
+				double val = multipleSumVector.get(r, 0) / (lengthOfQuery*lengthVectorOfDocs.get(r, 0));
+				similarity.set(r, 0, val);
+				System.out.println("Doc " + (r+1) + ": " + val);
+			}
+			
+			
+			
+			// cosine measure
+			
+			
+			
+		}
+		else{
+			//nothing to do
+		}
+		
+		
 
 	}
 
