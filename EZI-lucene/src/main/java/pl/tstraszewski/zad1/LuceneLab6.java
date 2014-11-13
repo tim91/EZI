@@ -15,6 +15,9 @@
 //import org.apache.lucene.document.Field;
 //import org.apache.lucene.document.Field.Store;
 //import org.apache.lucene.index.IndexWriter;
+//import org.apache.lucene.queryParser.QueryParser;
+//import org.apache.lucene.search.Hit;
+//import org.apache.lucene.search.Hits;
 //import org.apache.lucene.search.IndexSearcher;
 //import org.apache.lucene.search.Query;
 //
@@ -72,7 +75,13 @@
 //	
 //    	Analyzer analyzer = new StandardAnalyzer();
 //    	QueryParser parser = new QueryParser("content",analyzer);
-//    	Query q = parser.parse(queryString);
+//    	Query q = null;
+//		try {
+//			q = parser.parse(queryString);
+//		} catch (org.apache.lucene.queryParser.ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 //		Hits hits = searcher.search(q);
 //		return hits;
 //    }
