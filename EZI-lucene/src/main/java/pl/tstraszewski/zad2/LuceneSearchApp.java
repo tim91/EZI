@@ -71,13 +71,6 @@ public class LuceneSearchApp {
 		
 		Document d = new Document();
 		
-		FieldType descft = new FieldType();
-		descft.setTokenized(true);
-		descft.setIndexed(true);
-		descft.setStored(false);
-		descft.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
-		descft.freeze();
-		
 		TextField titleField = new TextField("title", rssDoc.getTitle(), Store.YES);
 		TextField descField = new TextField("description", rssDoc.getDescription(), Store.NO);
 		LongField dateField = new LongField("date", rssDoc.getPubDate().getTime(),Store.NO);
@@ -147,7 +140,7 @@ public class LuceneSearchApp {
 		
 
 		
-		System.out.println("Generated query: " + mainQuery.toString());
+//		System.out.println("Generated query: " + mainQuery.toString());
 		
 		// implement the Lucene search here
 
