@@ -156,7 +156,8 @@ public class HistogramClassifier extends Classifier {
 		HistogramInterval hi = this.histogram.get(indexInHistogram);
 		if(hi == null){
 			//TODO - what i should do here?
-			return Double.MIN_VALUE;
+			//return Double.MIN_VALUE;
+			return 0.0;
 		}
 		
 		return hi.getMostFrequentClass(); // class number; you can use distributionForInstance method

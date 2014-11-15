@@ -56,9 +56,9 @@ public class Experiment {
 	public static void main(String[] args) {
 		
 		Experiment e = new Experiment();
-		HistogramClassifier hc = new HistogramClassifier(4);
+		HistogramClassifier hc = new HistogramClassifier(3);
 		try {
-			e.runExperiment(hc, "iris.arff", 123456789, 0.5);
+			e.runExperiment(hc, "iris.arff", 10, 0.66);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
