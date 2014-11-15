@@ -56,7 +56,7 @@ public class Experiment {
 	public static void main(String[] args) {
 		
 		Experiment e = new Experiment();
-		HistogramClassifier hc = new HistogramClassifier(3);
+		HistogramClassifier hc = new HistogramClassifier(4);
 		try {
 			e.runExperiment(hc, "iris.arff", 123456789, 0.5);
 		} catch (Exception e1) {

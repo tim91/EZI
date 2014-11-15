@@ -1,15 +1,11 @@
 package put.cs.idss.dw.weka;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.api.hyperdrive.NArrayObject;
 
 import weka.classifiers.Classifier;
-import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -43,21 +39,18 @@ public class HistogramClassifier extends Classifier {
 		data.deleteWithMissingClass();
 		m_numClasses = data.numClasses();
 		
-		System.out.println("Classes: " + m_numClasses);
-		System.out.println();
-		
 		minMaxForAttributes = new HashMap<Integer,AttributeMinMax>();
 		
+		/**
+		 * Calculate min and max for each attribute
+		 */
 		for (int i = 0; i < data.numInstances(); ++i) {
 			Instance instance = data.instance(i);
 			
 			int classIndex = instance.classIndex();
 			
 			int atrNum = instance.numAttributes();
-			String desc = "\n----------------\nInstance: " + i + "\n";
 			for(int a = 0; a < atrNum; a++){
-			
-				Attribute attr = instance.attribute(a);
 				
 				//ignore class attribute
 				if(a == classIndex){
@@ -80,25 +73,22 @@ public class HistogramClassifier extends Classifier {
 				}
 				
 				minMaxForAttributes.put(a, minMax);
-				
-				desc += attr.name() + " " + attrVal + " ";
 			}
-			System.out.println(desc);
 		}
-		System.out.println(minMaxForAttributes);
-		//Create histogram
+		
 		histogram = createHistogramStructure();
 		
-		//store data in histogram structure
-		
+		//store data in histogram
 		for (int i = 0; i < data.numInstances(); ++i) {
 			Instance instance = data.instance(i);
-		
-			storeInstanceInHistogram(instance);
-			
+			saveInstanceInHistogram(instance);
 		}
 	}
 
+	/**
+	 * Method creates n-dimensional array (histogram)
+	 * @return n-dimensional array
+	 */
 	private NArrayObject<HistogramInterval> createHistogramStructure(){
 		
 		int[] dimensions = new int[minMaxForAttributes.keySet().size()];
@@ -107,9 +97,15 @@ public class HistogramClassifier extends Classifier {
 			dimensions[i] = (int)histogramSplits;
 		}
 		
+		//create and return n-dimensional array
 		return new NArrayObject<HistogramInterval>(dimensions);
 	}
 	
+	/**
+	 * Method calculates index for given instance in histogram
+	 * @param in - data
+	 * @return array with indexes
+	 */
 	private int[] getLocationOfInstanceInHistogram(Instance in){
 		
 		int[] indexInEveryDimension = new int[minMaxForAttributes.keySet().size()];
@@ -120,15 +116,14 @@ public class HistogramClassifier extends Classifier {
 			double av = in.value(attrIdx);
 			AttributeMinMax amm = minMaxForAttributes.get(attrIdx);
 			
-			//calculate distance for this attribute from begining of histogram
-			
-			//make sure that given values are between min and max
+			//make sure that value is between [min; max]
 			if(av < amm.min) av = amm.min;
 			if(av > amm.max) av = amm.max;
 			
-			double distance = av - amm.min;
+			//calculate position for value of attribute between [min; max]
+			double position = av - amm.min;
 			//calculate interval in histogram
-			int intervalIdx = (int)(distance / amm.getIntervalSize());
+			int intervalIdx = (int)(position / amm.getIntervalSize());
 			
 			if(intervalIdx == this.histogramSplits){
 				intervalIdx--;
@@ -140,7 +135,7 @@ public class HistogramClassifier extends Classifier {
 		return indexInEveryDimension;
 	}
 	
-	private void storeInstanceInHistogram(Instance in){
+	private void saveInstanceInHistogram(Instance in){
 		
 		int[] indexInHistogram = getLocationOfInstanceInHistogram(in);
 		
@@ -160,14 +155,11 @@ public class HistogramClassifier extends Classifier {
 		
 		HistogramInterval hi = this.histogram.get(indexInHistogram);
 		if(hi == null){
-			System.out.println("????????");
-			return 0.0;
-		}else{
-			System.out.println("found");
+			//TODO - what i should do here?
+			return Double.MIN_VALUE;
 		}
 		
 		return hi.getMostFrequentClass(); // class number; you can use distributionForInstance method
-//		return 0.0;
 	}
 
 	@Override
@@ -202,6 +194,11 @@ public class HistogramClassifier extends Classifier {
 		}
 	}
 	
+	/**
+	 * Class describes histogram interval
+	 * @author Tomek
+	 *
+	 */
 	private class HistogramInterval{
 		
 		Map<Double,Integer> classesFrequency = new HashMap<Double, Integer>();
