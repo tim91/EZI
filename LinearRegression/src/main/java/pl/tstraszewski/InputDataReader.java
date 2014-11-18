@@ -1,12 +1,15 @@
 package pl.tstraszewski;
 
-import Jama.Matrix;
-import javafx.util.Pair;
-import jdk.nashorn.internal.objects.NativeArray;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import Jama.Matrix;
 
 /**
  * Created by Tomek on 2014-11-16.
@@ -52,7 +55,7 @@ public class InputDataReader {
                 }
             }
 
-            return new Pair<Matrix,Matrix>(X,Y);
+            return Pair.of(X,Y);
 
         } else {
             throw new Exception("File: " + path + " doesn't exists!");
