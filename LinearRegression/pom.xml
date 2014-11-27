@@ -5,8 +5,8 @@
 
 	<groupId>pl.tstraszewski</groupId>
 	<artifactId>LinearRegression</artifactId>
+	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
-
 
 	<dependencies>
 		<dependency>
