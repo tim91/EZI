@@ -44,7 +44,6 @@ public class NaiveBayesClassifier extends Classifier {
 		for (int i = 0; i < data.numInstances(); i++) {
 			Instance instance = data.instance(i);
 			int classValue = (int) instance.classValue();
-			System.out.println(classValue);
 			classNum[classValue]++;
 			for (int j = 0; j < data.numAttributes() - 1; j++) {
 				//polic
