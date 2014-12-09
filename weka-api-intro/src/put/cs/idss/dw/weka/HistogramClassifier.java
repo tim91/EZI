@@ -33,12 +33,14 @@ public class HistogramClassifier extends Classifier {
 	
 	private NArrayObject<HistogramInterval> histogram;
 	
+	private double numInstances;
+	
 	@Override
 	public void buildClassifier(Instances data) throws Exception {
 		// TODO build classifier here and use it to classify new instances
 		data.deleteWithMissingClass();
 		m_numClasses = data.numClasses();
-		
+		numInstances = data.numInstances();
 		minMaxForAttributes = new HashMap<Integer,AttributeMinMax>();
 		
 		/**
@@ -164,7 +166,22 @@ public class HistogramClassifier extends Classifier {
 	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 		double[] dist = new double[m_numClasses];
-		// dist[0] = 1.0; or something like this :)
+		
+		int [] indexInHistogram = getLocationOfInstanceInHistogram(instance);
+		
+		HistogramInterval hi = this.histogram.get(indexInHistogram);
+		if(hi == null){
+			for(int i=0 ;i< m_numClasses; i++){
+				dist[i] = 0.0;
+			}
+		}
+		else{
+			Map<Double, Integer> map  = hi.getInstanceFreq();
+			for(double classNum : map.keySet()){
+				dist[(int)classNum] = ((double)map.get(classNum)) / numInstances;
+			}
+			
+		}
 		return dist;
 	}
 	
@@ -225,5 +242,8 @@ public class HistogramClassifier extends Classifier {
 			return this.mostFrequentClass;
 		}
 		
+		public Map<Double,Integer> getInstanceFreq(){
+			return classesFrequency;
+		}
 	}
 }

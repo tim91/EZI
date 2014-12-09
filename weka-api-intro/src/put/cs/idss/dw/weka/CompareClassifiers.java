@@ -34,11 +34,13 @@ public class CompareClassifiers {
 		classifiersToTest.add(new HistogramClassifier(3));
 		
 		for (String set : sets) {
-			
+			System.out.println("\n\n\n*********************\nSET: "+set+"\n*********************");
 			String dataset = set; // badges2 / credit-a-mod / credit-a
-			
-			for(double d = 0.2; d <=1; d+=0.2){
-				System.out.println("\n\n\n*********************\nSET: "+set+"\n*********************");
+			for (Classifier classifier : classifiersToTest) {
+				System.out.println("\n\n");
+				System.out.println("Classifier :" + classifier.getClass().getSimpleName());
+			for(double d = 0.2; d <=1.0; d+=0.05){
+				System.out.println();
 				double partOfDataset = d; // part of randomized train set (0 .. 1)
 				long seed = 1;
 				
@@ -56,21 +58,21 @@ public class CompareClassifiers {
 				
 				if (trainSet.classIndex() == -1) trainSet.setClassIndex(trainSet.numAttributes() - 1);
 				if (testSet.classIndex() == -1) testSet.setClassIndex(testSet.numAttributes() - 1);
-				
-				System.out.println("Data loaded and randomized:");
-				System.out.println(" - train set size: " + trainSet.numInstances());
-				System.out.println(" - test set size:  " + testSet.numInstances());
-				
+				System.out.print(d);
+//				System.out.println("Data loaded and randomized:");
+//				System.out.println(" - train set size: " + trainSet.numInstances());
+//				System.out.println(" - test set size:  " + testSet.numInstances());
+//				
 				// trainingTimes...
 				// testingTimes...
 				String classifierName;
 				long start;
-				System.out.println();
-				for (Classifier classifier : classifiersToTest) {
+//				System.out.println();
+				
 					classifierName = classifier.getClass().getSimpleName();
 					start = System.currentTimeMillis();
 					classifier.buildClassifier(trainSet);
-					System.out.println("Learning time for " + classifierName + " " + (System.currentTimeMillis() - start) + " ms");
+					System.out.print(" "+(System.currentTimeMillis() - start));
 					double correct = 0;
 					start = System.currentTimeMillis();
 					double sumOfPow = 0;
@@ -85,16 +87,15 @@ public class CompareClassifiers {
 							correct++;
 						}
 					}
-					System.out.println("Testing time for " + classifierName + " " + (System.currentTimeMillis() - start) + " ms");
-					System.out.println("Accuracy: " + (correct/testSet.numInstances()) + " sumOfPow: " + sumOfPow);
-					System.out.println("------------------------------------------------");
+					System.out.print(" "+(System.currentTimeMillis() - start));
+					System.out.print(" "+(correct/testSet.numInstances()) + " " + sumOfPow);
 					
 				}
-			}
+			
 			
 			
 		}
-		
+		}
 		// build each classifier...
 		
 		// 0/1 loss, squaredError ...
