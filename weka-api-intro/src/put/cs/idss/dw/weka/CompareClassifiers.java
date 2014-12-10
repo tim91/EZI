@@ -72,7 +72,7 @@ public class CompareClassifiers {
 					classifierName = classifier.getClass().getSimpleName();
 					start = System.currentTimeMillis();
 					classifier.buildClassifier(trainSet);
-					System.out.print(" "+(System.currentTimeMillis() - start));
+					System.out.print((" "+(System.currentTimeMillis() - start)).replaceAll(".", ","));
 					double correct = 0;
 					start = System.currentTimeMillis();
 					double sumOfPow = 0;
@@ -80,15 +80,15 @@ public class CompareClassifiers {
 						Instance instance = testSet.instance(i);
 						double truth = instance.classValue();
 						double [] dist = classifier.distributionForInstance(instance);
-						double aa = truth - dist[(int) (truth == 0.0 ? 1.0 : 0.0)];
-						sumOfPow += Math.pow(aa, 2);
 						double prediction = classifier.classifyInstance(instance);
+						double aa = truth - dist[(int) prediction];
+						sumOfPow += Math.pow(aa, 2);
 						if(truth == prediction){
 							correct++;
 						}
 					}
-					System.out.print(" "+(System.currentTimeMillis() - start));
-					System.out.print(" "+(correct/testSet.numInstances()) + " " + sumOfPow);
+					System.out.print((" "+(System.currentTimeMillis() - start)).replaceAll(".", ","));
+					System.out.print((" "+(correct/testSet.numInstances()) + " " + sumOfPow).replaceAll(".", ","));
 					
 				}
 			
