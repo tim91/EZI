@@ -58,7 +58,7 @@ public class CompareClassifiers {
 				
 				if (trainSet.classIndex() == -1) trainSet.setClassIndex(trainSet.numAttributes() - 1);
 				if (testSet.classIndex() == -1) testSet.setClassIndex(testSet.numAttributes() - 1);
-				System.out.print(d);
+				System.out.print((""+d).replace(".", ","));
 //				System.out.println("Data loaded and randomized:");
 //				System.out.println(" - train set size: " + trainSet.numInstances());
 //				System.out.println(" - test set size:  " + testSet.numInstances());
@@ -72,7 +72,7 @@ public class CompareClassifiers {
 					classifierName = classifier.getClass().getSimpleName();
 					start = System.currentTimeMillis();
 					classifier.buildClassifier(trainSet);
-					System.out.print((" "+(System.currentTimeMillis() - start)).replaceAll(".", ","));
+					System.out.print((" "+(System.currentTimeMillis() - start)).replace("\\.", ","));
 					double correct = 0;
 					start = System.currentTimeMillis();
 					double sumOfPow = 0;
@@ -81,14 +81,14 @@ public class CompareClassifiers {
 						double truth = instance.classValue();
 						double [] dist = classifier.distributionForInstance(instance);
 						double prediction = classifier.classifyInstance(instance);
-						double aa = truth - dist[(int) prediction];
+						double aa = truth - dist[truth ==0.0? 1 : 0];
 						sumOfPow += Math.pow(aa, 2);
 						if(truth == prediction){
 							correct++;
 						}
 					}
-					System.out.print((" "+(System.currentTimeMillis() - start)).replaceAll(".", ","));
-					System.out.print((" "+(correct/testSet.numInstances()) + " " + sumOfPow).replaceAll(".", ","));
+					System.out.print((" "+(System.currentTimeMillis() - start)).replace(".", ","));
+					System.out.print((" "+(correct/testSet.numInstances()) + " " + sumOfPow).replace(".", ","));
 					
 				}
 			
