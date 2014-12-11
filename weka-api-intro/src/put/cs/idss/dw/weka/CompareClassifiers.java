@@ -81,7 +81,7 @@ public class CompareClassifiers {
 						double truth = instance.classValue();
 						double [] dist = classifier.distributionForInstance(instance);
 						double prediction = classifier.classifyInstance(instance);
-						double aa = truth - dist[truth ==0.0? 1 : 0];
+						double aa = 1 - dist[(int)truth];
 						sumOfPow += Math.pow(aa, 2);
 						if(truth == prediction){
 							correct++;
