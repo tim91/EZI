@@ -177,8 +177,12 @@ public class HistogramClassifier extends Classifier {
 		}
 		else{
 			Map<Double, Integer> map  = hi.getInstanceFreq();
+			double sum=0;
 			for(double classNum : map.keySet()){
-				dist[(int)classNum] = ((double)map.get(classNum)) / numInstances;
+				sum += (double)map.get(classNum);
+			}
+			for(double classNum : map.keySet()){
+				dist[(int)classNum] = ((double)map.get(classNum)) / sum;
 			}
 			
 		}
