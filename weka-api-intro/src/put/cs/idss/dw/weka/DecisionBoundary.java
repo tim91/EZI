@@ -70,6 +70,9 @@ public class DecisionBoundary {
 			
 			if(f > 0)
 				classValue = "1";
+			
+//			if(Math.random() > 0.5)
+//				classValue = "1";
 								
 			inst.setValue(2, classValue);
 			instances.add(inst);
@@ -82,7 +85,7 @@ public class DecisionBoundary {
 		
 		final double w0 = -1;
 		
-		final double[] w = {1,0.5};
+		final double[] w = {0.1,1};
 		
 		
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -94,19 +97,25 @@ public class DecisionBoundary {
 				XYSeries series2 = new XYSeries("1");
 				
 				DecisionBoundary sm = new DecisionBoundary();
-				Instances inst = sm.generateRandomBinaryModel("dataset", 10000, w, w0);
+				Instances inst = sm.generateRandomBinaryModel("dataset", 1000, w, w0);
+				
+				System.out.println(inst);
 				
 				inst.setClassIndex(2);
 				
 				NaiveBayes nb = new NaiveBayes();
-				
+				double errors = 0;
 				try {
 					nb.buildClassifier(inst);
-				
+					
 					for(int i = 0; i < inst.numInstances(); i++) {
 						Instance instance = inst.instance(i);
 						double[] a = instance.toDoubleArray();
 						double y = nb.classifyInstance(instance);
+						
+						if(y != instance.classValue()){
+							errors++;
+						}
 						
 						if(y == 0) {
 							series1.add(a[0], a[1]);
@@ -115,6 +124,8 @@ public class DecisionBoundary {
 						}
 					}
 				} catch(Exception e ){System.out.println(e);};
+				
+				System.out.println("Errors: " + (errors / inst.numInstances()));
 				
 				seriesCollection.addSeries(series1);
 				seriesCollection.addSeries(series2);
