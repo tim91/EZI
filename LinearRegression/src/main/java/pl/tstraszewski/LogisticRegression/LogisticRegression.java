@@ -19,15 +19,10 @@ public class LogisticRegression extends Regression implements Testable {
         return 1 / m;
     }
 
-    private double countErrorElem(double wx,double y){
-        return Math.log(1 + Math.exp(-1*y*wx));
-    }
 
-    private double getErrorDiff(double last, double curr){
-        return Math.abs(last - curr);
-    }
 
-    private Matrix W;
+
+
 
     @Override
     public TrainingReport train(String pathToTrainFile) {
@@ -44,7 +39,7 @@ public class LogisticRegression extends Regression implements Testable {
         stt = System.currentTimeMillis();
         double lambda = 0;
 
-        double errorTolerance = Math.pow(10,-5);
+
 
         Matrix X = matrixes.getKey();
         Matrix Y = matrixes.getValue();
@@ -60,7 +55,7 @@ public class LogisticRegression extends Regression implements Testable {
         Matrix I = Matrix.identity(B.getRowDimension(), B.getRowDimension()).times(1);
 //        System.out.println("IDENTITY: " + (System.currentTimeMillis() - stt) + "ms" );
 //        stt = System.currentTimeMillis();
-        double currError=Double.MIN_VALUE,lastError=Double.MIN_VALUE;
+
 
 
         long its = 0;
@@ -96,12 +91,13 @@ public class LogisticRegression extends Regression implements Testable {
             }else{
                 currError = error;
 
-                if(getErrorDiff(currError,lastError) <= errorTolerance){
+                if(stop(currError,lastError,errorTolerance)){
 //                    System.out.println("BREAK");
 
                     TrainingReport tr = new TrainingReport();
                     tr.processingTime = System.currentTimeMillis() - st;
                     tr.iterations = its;
+
                     return tr;
                 }
 
@@ -147,24 +143,6 @@ public class LogisticRegression extends Regression implements Testable {
 
     }
 
-
-    @Override
-    public TestingReport test(String pathToTestFile) {
-
-        try {
-            TestingReport tr = new TestingReport();
-            tr.setName = pathToTestFile;
-            tr.binaryError = countBinaryError(this.W,pathToTestFile);
-            tr.logisticError = countLogisticError(this.W, pathToTestFile);
-
-            return tr;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public Matrix multiplyByDiagonalMatrix(Matrix A, Matrix diagonal){
         Matrix temp = new Matrix(A.getRowDimension(),diagonal.getColumnDimension());
         for (int i = 0; i < A.getRowDimension(); i++) {
@@ -179,7 +157,5 @@ public class LogisticRegression extends Regression implements Testable {
         return temp;
     }
 
-    public Matrix getW() {
-        return W;
-    }
+
 }
