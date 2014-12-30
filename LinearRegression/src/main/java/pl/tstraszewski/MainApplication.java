@@ -21,12 +21,12 @@ public class MainApplication {
 //        lr.getW().print(1,6);
 
         StochasticLogisticRegression slr = new StochasticLogisticRegression();
-        TrainingReport strainReport = slr.train("src/main/resources/file3_test.txt");
+        TrainingReport strainReport = slr.train("src/main/resources/file3_train.txt");
         System.out.println(strainReport.toString());
-        TestingReport stestReport = slr.test("src/main/resources/file3_test.txt");
+        TestingReport stestReport = slr.test("src/main/resources/file3_train.txt");
         System.out.println(stestReport.toString());
-        TestingReport stestReport1 = slr.test("src/main/resources/file3_train.txt");
+        TestingReport stestReport1 = slr.test("src/main/resources/file3_test.txt");
         System.out.println(stestReport1.toString());
-        slr.getW().print(1,6);
+//        slr.getW().print(1,6);
     }
 }
