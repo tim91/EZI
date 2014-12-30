@@ -17,9 +17,9 @@ public class LinearRegression {
 
     }
 
-    public Matrix train() throws Exception {
+    public Matrix train(String trainData) throws Exception {
 
-        Pair<Matrix,Matrix> matrixes = InputDataReader.readData(trainDataPath);
+        Pair<Matrix,Matrix> matrixes = InputDataReader.readData(trainData);
 
         Matrix X = matrixes.getKey();
         Matrix Y = matrixes.getValue();
@@ -36,29 +36,33 @@ public class LinearRegression {
         Matrix G = XT.times(Y);
         Matrix W = H.inverse().times(G);
 
-        W.print(1,6);
+//        W.print(1,6);
         return W;
     }
 
-    public void test(Matrix W) throws Exception {
+    public Matrix test(Matrix W, String testData) throws Exception {
                         //check
-            Pair<Matrix,Matrix> matrixes1 = InputDataReader.readData(this.testDataPath);
-            Matrix Xtest = matrixes1.getKey();
-            Matrix Ytest = matrixes1.getValue();
+        Pair<Matrix,Matrix> matrixes1 = InputDataReader.readData(testData);
+        Matrix Xtest = matrixes1.getKey();
+        Matrix Ycounted = Xtest.times(W);
+        return Ycounted;
+     }
 
-            Matrix Ycounted = Xtest.times(W);
+    public double countBinaryError(Matrix data, String dataToCompare) throws Exception {
+        Pair<Matrix,Matrix> matrixes1 = InputDataReader.readData(dataToCompare);
+        Matrix Ytest = matrixes1.getValue();
 
-            Matrix Ydiff = Ytest.minus(Ycounted);
-
-            double sum=0.0;
-            for(int i=0; i < Ydiff.getRowDimension(); i++){
-                sum += Math.pow(Ydiff.get(i, 0),2);
+        double binaryError = 0.0;
+        for(int i=0; i < Ytest.getRowDimension(); i++){
+            double truth = Ytest.get(i,0);
+            double predicted = data.get(i,0);
+            boolean theSameSig = (truth * predicted) >= 0;
+            if(theSameSig == false){
+                //bad classification
+                binaryError++;
             }
-
-            sum = sum / Xtest.getRowDimension();
-
-            Ydiff.print(1, 6);
-            System.out.println("Test Result: " + Math.sqrt(sum) );
+        }
+        return binaryError / Ytest.getRowDimension();
     }
 
 //    public static void main(String [] args){
