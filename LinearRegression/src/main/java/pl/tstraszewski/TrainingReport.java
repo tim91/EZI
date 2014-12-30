@@ -12,7 +12,8 @@ public class TrainingReport {
     public String toString() {
         return "TrainingReport{" +
                 "iterations=" + iterations +
-                ", processingTime=" + processingTime +
+                ", processingTimeMs=" + processingTime +
+                ", processingTimeS=" + processingTime/1000 +
                 '}';
     }
 }

@@ -30,7 +30,19 @@ public abstract class Regression {
         return binaryError / Ytest.getRowDimension();
     }
 
-    public double countLogisticError(){
-        return 0.0;
+    public double countLogisticError(Matrix counted, String dataToCompare) throws Exception {
+
+        Pair<Matrix,Matrix> matrixes1 = InputDataReader.readData(dataToCompare);
+        Matrix Ytest = matrixes1.getValue();
+        Matrix Xtest = matrixes1.getKey();
+
+        Matrix Ypredicted = Xtest.times(counted);
+        double logisticError = 0;
+        for(int r=0; r<Ytest.getRowDimension(); r++ ){
+            double powEl = -1 * Ytest.get(r,0) * Ypredicted.get(r,0);
+            logisticError += Math.exp(powEl);
+        }
+
+        return logisticError / Ytest.getRowDimension();
     }
 }

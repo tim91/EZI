@@ -33,5 +33,7 @@ public class MainApplication {
         System.out.println(trainReport.toString());
         TestingReport testReport = lr.test("src/main/resources/file3_train.txt");
         System.out.println(testReport.toString());
+        TestingReport testReport1 = lr.test("src/main/resources/file3_test.txt");
+        System.out.println(testReport1.toString());
     }
 }
