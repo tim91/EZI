@@ -38,6 +38,12 @@ public class StochasticLogisticRegression extends Regression implements Testable
             epo++;
 
             for(int i=0; i< X.getRowDimension(); i++){
+
+                System.out.print(i+ " ");
+                if(i%20 == 0){
+                    System.out.println();
+                }
+
                 double error = 0;
                 for (int r = 0; r < X.getRowDimension(); r++) {
                     Matrix xRow = X.getMatrix(r, r, 0, X.getColumnDimension() - 1);
@@ -83,6 +89,11 @@ public class StochasticLogisticRegression extends Regression implements Testable
 //                System.out.println(i);
             }
             System.out.println(currError + " epoka: " + epo);
+
+            //blad na zwbiorze treningowym po epoce
+            TestingReport stestReport = this.test("src/main/resources/file3_train.txt");
+            System.out.println(stestReport.toString());
+            System.out.println("--------------------------------");
         }
 
     }
