@@ -1,0 +1,43 @@
+WCZYTANIE DANYCH: 3141ms
+255111.44367224345 epoka: 1
+TestingReport{binaryError=0.3927, logisticError=43.57398153571611, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+121483.64667821483 epoka: 2
+TestingReport{binaryError=0.2419, logisticError=2.7015217895349894, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+338966.02762889233 epoka: 3
+TestingReport{binaryError=0.3161, logisticError=7.196487873525734, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+82642.79636185359 epoka: 4
+TestingReport{binaryError=0.2692, logisticError=4.634043811085683, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+288814.71703474113 epoka: 5
+TestingReport{binaryError=0.3926, logisticError=41.746546590984956, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+92395.9046253276 epoka: 6
+TestingReport{binaryError=0.3189, logisticError=7.939546634178859, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+144413.02983518227 epoka: 7
+TestingReport{binaryError=0.3834, logisticError=19.134816274307813, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+226387.42583101228 epoka: 8
+TestingReport{binaryError=0.3928, logisticError=74.64013247576224, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+28699.092375458822 epoka: 9
+TestingReport{binaryError=0.2059, logisticError=2.870226172008689, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+141598.2406846589 epoka: 10
+TestingReport{binaryError=0.3927, logisticError=44.73616764916001, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+183489.83038031525 epoka: 11
+TestingReport{binaryError=0.4709, logisticError=13.929101122964276, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+199232.02375568537 epoka: 12
+TestingReport{binaryError=0.3696, logisticError=16.171080201398837, setName='src/main/resources/file3_train.txt'}
+--------------------------------
+23466.682171871646 epoka: 13
+TrainingReport{iterations=2610.0, processingTimeMs=1103139.0, processingTimeS=1103.139}
+TestingReport{binaryError=0.1941, logisticError=2.3466682171871645, setName='src/main/resources/file3_train.txt'}
+TestingReport{binaryError=0.2169, logisticError=2.967490636915071, setName='src/main/resources/file3_test.txt'}
+
+Process finished with exit code 0

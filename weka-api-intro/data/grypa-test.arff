@@ -4,7 +4,7 @@
 @attribute katar {nie,tak}
 @attribute bol_glowy {nie,sredni,duzy}
 @attribute goraczka {nie,tak}
-@attribute class_grypa {nie,tak}
+@attribute class {nie,tak}
 
 
 @data

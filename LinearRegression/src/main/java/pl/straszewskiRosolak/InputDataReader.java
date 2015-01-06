@@ -1,4 +1,4 @@
-package pl.tstraszewski;
+package pl.straszewskiRosolak;
 
 import java.io.BufferedReader;
 import java.io.File;

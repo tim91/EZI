@@ -1,10 +1,10 @@
-package pl.tstraszewski.LogisticRegression;
+package pl.straszewskiRosolak.LogisticRegression;
 
 import Jama.Matrix;
 import org.apache.commons.lang3.tuple.Pair;
-import pl.tstraszewski.InputDataReader;
-import pl.tstraszewski.Testable;
-import pl.tstraszewski.TestingReport;
+import pl.straszewskiRosolak.InputDataReader;
+import pl.straszewskiRosolak.LogisticRegression.Report.Testable;
+import pl.straszewskiRosolak.LogisticRegression.Report.TestingReport;
 
 /**
  * Created by Tomek on 2014-12-30.

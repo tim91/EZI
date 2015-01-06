@@ -1,8 +1,8 @@
-package pl.tstraszewski;
+package pl.straszewskiRosolak;
 
-import Jama.Matrix;
-import pl.tstraszewski.LogisticRegression.LogisticRegression;
-import pl.tstraszewski.LogisticRegression.StochasticLogisticRegression;
+import pl.straszewskiRosolak.LogisticRegression.Report.TestingReport;
+import pl.straszewskiRosolak.LogisticRegression.Report.TrainingReport;
+import pl.straszewskiRosolak.LogisticRegression.StochasticLogisticRegression;
 
 /**
  * Created by Tomek on 2014-12-17.
@@ -20,6 +20,7 @@ public class MainApplication {
 //        System.out.println(testReport1.toString());
 //        lr.getW().print(1,6);
 
+
         StochasticLogisticRegression slr = new StochasticLogisticRegression();
         TrainingReport strainReport = slr.train("src/main/resources/file3_train.txt");
         System.out.println(strainReport.toString());
@@ -27,6 +28,5 @@ public class MainApplication {
         System.out.println(stestReport.toString());
         TestingReport stestReport1 = slr.test("src/main/resources/file3_test.txt");
         System.out.println(stestReport1.toString());
-//        slr.getW().print(1,6);
     }
 }

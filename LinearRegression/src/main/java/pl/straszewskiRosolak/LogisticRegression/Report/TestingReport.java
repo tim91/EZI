@@ -1,4 +1,4 @@
-package pl.tstraszewski;
+package pl.straszewskiRosolak.LogisticRegression.Report;
 
 /**
  * Created by Tomek on 2014-12-30.
