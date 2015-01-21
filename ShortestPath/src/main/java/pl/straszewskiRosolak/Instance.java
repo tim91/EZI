@@ -85,7 +85,7 @@ public class Instance {
 		    		break;
 		    	}
 		    	if(lineNr > 6){
-		    		System.out.println(line);
+//		    		System.out.println(line);
 		    		String [] ll = line.split(" ");
 		    		int [] a = new int[2];
 		    		a[0] = Integer.parseInt(ll[1]);

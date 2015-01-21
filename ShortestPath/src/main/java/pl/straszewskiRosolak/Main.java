@@ -10,9 +10,11 @@ public class Main {
 			
 //			ins.printDistanceMatrix();
 			
-			Algorithm alg = new ZachlannyALg();
-			alg.solve(ins);
+//			Algorithm alg = new ZachlannyALg();
+//			alg.solve(ins);
 			
+			GCDrugiAlg dr = new GCDrugiAlg();
+			dr.solve(ins);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
