@@ -39,6 +39,18 @@ public class NNTest {
 		System.out.println(sum);
 		sum = alg.solve(ins);
 		System.out.println(sum);
+	}
 
+	@Test
+	public void GCDrugiAlg2() throws Exception {
+		InputStream is = this.getClass().getClassLoader()
+				.getResourceAsStream("test2.txt");
+		Instance ins = Instance.getInstance(is);
+		ins.createDistanceMatrix();
+		ins.printDistanceMatrix();
+		System.out.println("--------------");
+		GCDrugiAlg alg = new GCDrugiAlg();
+
+		alg.solve(ins);
 	}
 }
