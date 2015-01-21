@@ -1,6 +1,7 @@
 package pl.straszewskiRosolak;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -35,12 +36,25 @@ public class GCDrugiAlg extends ZachlannyALg implements Algorithm {
 				int minCircuitLocal = Integer.MAX_VALUE;
 				// vL, vP , i nowy dodany miedzy nimi
 				int[] minPosLocal = new int[3];
-				for (int vIdx = 0; vIdx < tr.vertex.size() - 1; vIdx++) {
+				for (int vIdx = 0; vIdx < tr.vertex.size() ; vIdx++) {
+					
 					int circuit = tr.circuit;
-					// lewy wierzcholek
-					int vL = tr.vertex.get(vIdx);
-					// prawy wierzcholek
-					int vR = tr.vertex.get(vIdx + 1);
+					int vL;
+					int vR;
+					if(vIdx == tr.vertex.size()-1 && vIdx > 0){
+						// lewy wierzcholek
+						vL = tr.vertex.get(vIdx);
+						// prawy wierzcholek
+						vR = tr.vertex.get(0);
+					}else if(vIdx == tr.vertex.size()-1){
+						continue;
+					}else{
+						// lewy wierzcholek
+						vL = tr.vertex.get(vIdx);
+						// prawy wierzcholek
+						vR = tr.vertex.get(vIdx + 1);
+					}
+					
 
 					// odcinam ta krawedz wiec odejmuje odleglość
 					int tmp = i.getDistanceMatrix()[vL][vR];
@@ -70,7 +84,7 @@ public class GCDrugiAlg extends ZachlannyALg implements Algorithm {
 
 			// znalazelm wierzcholek do doklejenia
 			tr.circuit = minCircuitGlobal;
-			tr.vertex.add(minPosGlobal[0], minPosGlobal[2]);
+			tr.vertex.add(minPosGlobal[1], minPosGlobal[2]);
 			tr.vertexOnList.add(minPosGlobal[2]);
 		}
 
