@@ -9,12 +9,13 @@ public class Main {
 			ins.createDistanceMatrix();
 
 			ZachlannyALg alg = new ZachlannyALg();
-			int result = alg.solve(ins);
-			System.out.println("NN: " + result);
+			System.out.println("NN: ");
+			alg.solve(ins);
 
 			GCDrugiAlg dr = new GCDrugiAlg();
-			result = dr.solve(ins);
-			System.out.println("GC: " + result);
+			System.out.println("GC: ");
+			dr.solve(ins);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
