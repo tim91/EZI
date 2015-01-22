@@ -8,30 +8,32 @@ public class Main {
 
 			ins.createDistanceMatrix();
 
-			ZachlannyALg alg = new ZachlannyALg();
-			System.out.println("NN: ");
-			alg.solve(ins);
+			// ZachlannyALg alg = new ZachlannyALg();
+			// System.out.println("NN: ");
+			// alg.solve(ins);
+			//
+			// GCDrugiAlg dr = new GCDrugiAlg();
+			// System.out.println("GC: ");
+			// dr.solve(ins);
+			//
+			// ins = Instance.getInstance("data/kroA200.tsp");
+			//
+			// ins.createDistanceMatrix();
+			//
+			// alg = new ZachlannyALg();
+			// System.out.println("NN: ");
+			// alg.solve(ins);
+			//
+			// dr = new GCDrugiAlg();
+			// System.out.println("GC: ");
+			// dr.solve(ins);
+			//
+			// Algorithm ran = new RandomAlg();
+			// System.out.println("Random: ");
+			// ran.solve(ins);
 
-			GCDrugiAlg dr = new GCDrugiAlg();
-			System.out.println("GC: ");
-			dr.solve(ins);
-
-			ins = Instance.getInstance("data/kroA200.tsp");
-
-			ins.createDistanceMatrix();
-
-			alg = new ZachlannyALg();
-			System.out.println("NN: ");
-			alg.solve(ins);
-
-			dr = new GCDrugiAlg();
-			System.out.println("GC: ");
-			dr.solve(ins);
-
-			Algorithm ran = new RandomAlg();
-			System.out.println("Random: ");
-			ran.solve(ins);
-
+			Algorithm ver = new VertexPairAlg();
+			System.out.println("Vertex Pair: " + ver.solve(ins));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

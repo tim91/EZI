@@ -55,5 +55,15 @@ public class VertexPairTest {
 
 		int sum = alg.solve(ins);
 		System.out.println(sum);
+		// assertEquals(sum, 29);
+	}
+
+	@Test
+	public void revert() throws Exception {
+
+		VertexPairAlg alg = new VertexPairAlg();
+		List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6);
+		alg.revert(list, 1, 3);
+		assertEquals(Arrays.toString(list.toArray()), "[1, 4, 3, 2, 5, 6]");
 	}
 }
