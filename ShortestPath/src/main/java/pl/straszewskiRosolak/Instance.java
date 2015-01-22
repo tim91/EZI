@@ -58,7 +58,7 @@ public class Instance {
 
 		double s = aa * aa + bb * bb;
 		s = Math.sqrt(s);
-		return Math.round((float) s);
+		return (int) (s + 0.5);
 	}
 
 	public static Instance getInstance(String path) throws Exception {
