@@ -15,13 +15,25 @@ public class EdgeSwitchAlg extends VertexPairAlg implements Algorithm {
 	@Override
 	public int solve(Instance ins) {
 		
-		int startVertex = r.nextInt(ins.getData().size());
+//		int startVertex = r.nextInt(ins.getData().size());
+//		int currCircut = 0;
+//		int prev = startVertex;
+//		currSolution = new ArrayList<Integer>();
+//		currSolution.add(startVertex);
+//		for (int i = 1; i < ins.getData().size(); i++) {
+//			int next = randVertex(ins, currSolution);
+//			currSolution.add(next);
+//			currCircut += ins.getDistanceMatrix()[prev][next];
+//			prev = next;
+//		}
+//		currCircut += ins.getDistanceMatrix()[prev][startVertex];
+		int startVertex = 0;
 		int currCircut = 0;
 		int prev = startVertex;
 		currSolution = new ArrayList<Integer>();
 		currSolution.add(startVertex);
 		for (int i = 1; i < ins.getData().size(); i++) {
-			int next = randVertex(ins, currSolution);
+			int next = i;
 			currSolution.add(next);
 			currCircut += ins.getDistanceMatrix()[prev][next];
 			prev = next;
@@ -37,33 +49,48 @@ public class EdgeSwitchAlg extends VertexPairAlg implements Algorithm {
 		System.out.println("\n");
 		
 		List<List<Integer[]>> pairs = generatePairsToSwap(ins.getData().size());
-		int localBestCirc = currCircut;
+		int localBest = currCircut;
+		int iter = 0;
+		List<Integer> localBestSolution = new ArrayList<Integer>(currSolution);
 		do{
+			currCircut = localBest;
+			currSolution = localBestSolution;
+			int temp = localBest;
+//			localBestSolution.clear();
 			for (List<Integer[]> list : pairs) {
 				for(Integer[] pToSwap : list){
 					
 					//odejmij odleglosci
-					int tempCirc = localBestCirc;
-					int firstNeightbour  = (pToSwap[0] == 0) ? ins.getData().size()-1 : pToSwap[0] - 1;
-					int secondNeightbour = (pToSwap[1] == ins.getData().size()-1) ? 0 : pToSwap[1] + 1;
+					int tempCirc = localBest;
+					int firstNeightbourIdx  = (pToSwap[0] == 0) ? ins.getData().size()-1 : pToSwap[0] - 1;
+					int secondNeightbourIdx = (pToSwap[1] == ins.getData().size()-1) ? 0 : pToSwap[1] + 1;
 					
-					tempCirc -= ins.getDistanceMatrix()[pToSwap[0]][firstNeightbour] + ins.getDistanceMatrix()[pToSwap[1]][secondNeightbour];
-					tempCirc += ins.getDistanceMatrix()[pToSwap[1]][firstNeightbour] + ins.getDistanceMatrix()[pToSwap[0]][secondNeightbour];
-					System.out.println("Temp circ: " + tempCirc);
-					if(tempCirc < localBestCirc){
+					int pToSwapa = currSolution.get(pToSwap[0]);
+					int pToSwapb = currSolution.get(pToSwap[1]);
+					int firstNeightbour = currSolution.get(firstNeightbourIdx);
+					int secondNeightbour = currSolution.get(secondNeightbourIdx);
+					
+					tempCirc -= (ins.getDistanceMatrix()[pToSwapa][firstNeightbour] + ins.getDistanceMatrix()[pToSwapb][secondNeightbour]);
+					tempCirc += (ins.getDistanceMatrix()[pToSwapb][firstNeightbour] + ins.getDistanceMatrix()[pToSwapa][secondNeightbour]);
+					
+//						System.out.println(Arrays.toString(pToSwap) + " Temp circ: " + tempCirc);
+					if(tempCirc < temp){
 						//better
-						currSolution = switchEdges(currSolution,pToSwap[0],pToSwap[1]);
-						localBestCirc = tempCirc;
-						System.out.println("Curr sol, replaced indexes: " + Arrays.toString(pToSwap) + " circ: " + localBestCirc);
-						printList(currSolution);
-						System.out.println();
+						localBestSolution = switchEdges(currSolution,pToSwap[0],pToSwap[1]);
+					
+						temp = tempCirc;
+//						System.out.println("\t\tfound better:" +  tempCirc);
 					}
 					
 				}
 			}
-		}while(localBestCirc  >= currCircut );
+			System.out.println("Temp: " + temp);
+			localBest = temp;
+			iter++;
+		}while (localBest < currCircut);
 		
-		
+		printBestSolution();
+		System.out.println("aaaIter: " + iter);
 		return currCircut;
 	}
 	
@@ -72,7 +99,7 @@ public class EdgeSwitchAlg extends VertexPairAlg implements Algorithm {
 	}
 	
 	private void printList(List<Integer> l ){
-		System.out.println(Arrays.toString(l.toArray(new Integer[currSolution.size()])));
+		System.out.println(Arrays.toString(l.toArray(new Integer[l.size()])));
 	}
 	
 	private List<Integer> switchEdges(List<Integer> arr, int a, int b){

@@ -34,6 +34,9 @@ public class Main {
 
 			Algorithm ver = new VertexPairAlg();
 			System.out.println("Vertex Pair: " + ver.solve(ins));
+			System.out.println("--------------------------------");
+			Algorithm edge = new EdgeSwitchAlg();
+			System.out.println("Egde switch: " + edge.solve(ins));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
