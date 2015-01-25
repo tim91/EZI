@@ -15,33 +15,18 @@ public class EdgeSwitchAlg extends VertexPairAlg implements Algorithm {
 	@Override
 	public int solve(Instance ins) {
 		
-//		int startVertex = r.nextInt(ins.getData().size());
-//		int currCircut = 0;
-//		int prev = startVertex;
-//		currSolution = new ArrayList<Integer>();
-//		currSolution.add(startVertex);
-//		for (int i = 1; i < ins.getData().size(); i++) {
-//			int next = randVertex(ins, currSolution);
-//			currSolution.add(next);
-//			currCircut += ins.getDistanceMatrix()[prev][next];
-//			prev = next;
-//		}
-//		currCircut += ins.getDistanceMatrix()[prev][startVertex];
-		int startVertex = 0;
+		int startVertex = r.nextInt(ins.getData().size());
 		int currCircut = 0;
 		int prev = startVertex;
 		currSolution = new ArrayList<Integer>();
 		currSolution.add(startVertex);
 		for (int i = 1; i < ins.getData().size(); i++) {
-			int next = i;
+			int next = randVertex(ins, currSolution);
 			currSolution.add(next);
 			currCircut += ins.getDistanceMatrix()[prev][next];
 			prev = next;
 		}
 		currCircut += ins.getDistanceMatrix()[prev][startVertex];
-//		int currCircut = 105;
-//		currSolution = Arrays.asList(new Integer[]{1,3,0,4,2});
-		
 		
 		System.out.println("Random: " + currCircut);
 		printList(currSolution);
@@ -51,12 +36,8 @@ public class EdgeSwitchAlg extends VertexPairAlg implements Algorithm {
 		List<List<Integer[]>> pairs = generatePairsToSwap(ins.getData().size());
 		int localBest = currCircut;
 		int iter = 0;
-		List<Integer> localBestSolution = new ArrayList<Integer>(currSolution);
 		do{
 			currCircut = localBest;
-			currSolution = localBestSolution;
-			int temp = localBest;
-//			localBestSolution.clear();
 			for (List<Integer[]> list : pairs) {
 				for(Integer[] pToSwap : list){
 					
@@ -73,19 +54,15 @@ public class EdgeSwitchAlg extends VertexPairAlg implements Algorithm {
 					tempCirc -= (ins.getDistanceMatrix()[pToSwapa][firstNeightbour] + ins.getDistanceMatrix()[pToSwapb][secondNeightbour]);
 					tempCirc += (ins.getDistanceMatrix()[pToSwapb][firstNeightbour] + ins.getDistanceMatrix()[pToSwapa][secondNeightbour]);
 					
-//						System.out.println(Arrays.toString(pToSwap) + " Temp circ: " + tempCirc);
-					if(tempCirc < temp){
+					if(tempCirc < localBest){
 						//better
-						localBestSolution = switchEdges(currSolution,pToSwap[0],pToSwap[1]);
-					
-						temp = tempCirc;
-//						System.out.println("\t\tfound better:" +  tempCirc);
+						currSolution = switchEdges(currSolution,pToSwap[0],pToSwap[1]);
+						localBest = tempCirc;
+//						System.out.println("\t\tfound better:" +  tempCirc + " " + Arrays.toString(pToSwap));
 					}
 					
 				}
 			}
-			System.out.println("Temp: " + temp);
-			localBest = temp;
 			iter++;
 		}while (localBest < currCircut);
 		
@@ -123,7 +100,7 @@ public class EdgeSwitchAlg extends VertexPairAlg implements Algorithm {
 	 * @param size
 	 * @return
 	 */
-	public List<List<Integer[]>> generatePairsToSwap(int size){
+	protected List<List<Integer[]>> generatePairsToSwap(int size){
 		List<List<Integer[]>> p = new ArrayList<List<Integer[]>>();
 		for(int i=0; i<size; i++){
 			List<Integer[]> l = new ArrayList<Integer[]>();

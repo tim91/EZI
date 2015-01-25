@@ -28,7 +28,7 @@ public class EdgeSwitchAlgTest {
 	public void algTest(){
 		
 		InputStream is = this.getClass().getClassLoader()
-				.getResourceAsStream("test4.txt");
+				.getResourceAsStream("test3.txt");
 		Instance ins;
 		try {
 			ins = Instance.getInstance(is);
