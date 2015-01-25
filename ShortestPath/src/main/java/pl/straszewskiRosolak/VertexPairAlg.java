@@ -115,7 +115,7 @@ public class VertexPairAlg extends ZachlannyALg implements Algorithm {
 		return pairs;
 	}
 
-	private int randVertex(Instance ins, List<Integer> saw) {
+	protected int randVertex(Instance ins, List<Integer> saw) {
 		int rr = -1;
 		do {
 			rr = r.nextInt(ins.getData().size());
