@@ -71,6 +71,8 @@ public class VertexPairAlg extends ZachlannyALg implements Algorithm {
 					revert(bestSolution, pair[0], pair[1]);
 				Collections.swap(bestSolution, pair[0], pair[1]);
 				// od razu polepszam
+				solution = bestSolution;
+				// bez tej linii jest kosmos wynik
 				return new Object[] { bestSolution, bestCircut };
 			}
 		}
