@@ -12,18 +12,19 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 	@Override
 	public int solve(Instance ins, int iterations) {
 
-		
 		int sum = 0;
 		int min = Integer.MAX_VALUE;
 		int max = Integer.MIN_VALUE;
-		for(int it=0; it< iterations; it++){
-			int startVertex = r.nextInt(ins.getData().size());
+		int sumTime = 0;
+		for (int it = 0; it < iterations; it++) {
+			long st = System.currentTimeMillis();
+			int startVertex = 0;// r.nextInt(ins.getData().size());
 			int circut = 0;
 			int prev = startVertex;
 			List<Integer> solution = new ArrayList<Integer>();
 			solution.add(startVertex);
 			for (int i = 1; i < ins.getData().size(); i++) {
-				int next = randVertex(ins, solution);
+				int next = i;// randVertex(ins, solution);
 				solution.add(next);
 				circut += ins.getDistanceMatrix()[prev][next];
 				prev = next;
@@ -33,7 +34,7 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 			int size = ins.getData().size();
 
 			// Indeksy par w liście solution(nie zawiera indeksów wierzchołków)
-			List<Integer[]> pairs = generatePairs(size);
+			List<Integer[]> pairs = generatePairs(size, ins);
 			List<Integer> bestSolution = solution;
 			int bestCircut = circut;
 			do {
@@ -43,21 +44,22 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 				bestCircut = (int) result[1];
 			} while (bestCircut < circut);
 			sum += bestCircut;
-			if(bestCircut < min){
+			if (bestCircut < min) {
 				min = bestCircut;
 			}
-			
-			if(bestCircut > max){
+
+			if (bestCircut > max) {
 				max = bestCircut;
 			}
+			sumTime += (System.currentTimeMillis() - st);
 		}
 		System.out.println("Min: " + min);
 		System.out.println("Max: " + max);
-		System.out.println("Avg: " + sum/iterations);
-		
+		System.out.println("Avg: " + sum / iterations);
+		System.out.println("Time Avg: " + sumTime / iterations);
 		return min;
-		
-//		return bestCircut;
+
+		// return bestCircut;
 	}
 
 	Object[] solve(int circut, List<Integer> solution, List<Integer[]> pairs,
@@ -84,12 +86,16 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 
 			int newCircut = circut - oldPrevEdge - oldNextEdge + newPrevEdge
 					+ newNextEdge;
+
 			if (newCircut < bestCircut) {
 				bestCircut = newCircut;
 				bestSolution = new ArrayList<Integer>(solution);
 				if (!pairOfFirstAndLast(ins, pair))
 					revert(bestSolution, pair[0], pair[1]);
 				Collections.swap(bestSolution, pair[0], pair[1]);
+				if (checkSolution(bestSolution, bestCircut, ins) != 0) {
+					System.out.println("SADAS");
+				}
 				// od razu polepszam
 				solution = bestSolution;
 				// bez tej linii jest kosmos wynik
@@ -98,6 +104,28 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 		}
 		return new Object[] { bestSolution, bestCircut };
 
+	}
+
+	private int checkSolution(List<Integer> bestSolution, int bestCircut,
+			Instance ins) {
+		int start = bestSolution.get(0);
+		int sum = 0;
+		int prev = start;
+		for (int i = 1; i < bestSolution.size(); i++) {
+			int next = bestSolution.get(i);
+			sum += ins.getDistanceMatrix()[prev][next];
+			prev = next;
+		}
+		sum += ins.getDistanceMatrix()[prev][start];
+		return bestCircut - sum;
+	}
+
+	private void validate(int v1, int v2, List<Integer> solution) {
+		int i1 = solution.indexOf(v1);
+		int i2 = solution.indexOf(v2);
+		if (Math.abs(i1 - i2) > 1 && Math.abs(i1 - i2) != solution.size() - 1) {
+			System.out.println("SDAS");
+		}
 	}
 
 	private boolean pairOfFirstAndLast(Instance ins, Integer[] pair) {
@@ -127,7 +155,7 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 			return solution.get(vertex - 1);
 	}
 
-	protected List<Integer[]> generatePairs(int size) {
+	protected List<Integer[]> generatePairs(int size, Instance ins) {
 		List<Integer[]> pairs = new ArrayList<Integer[]>();
 		for (int i = 0; i < size; i++) {
 			for (int j = i + 2; j < size; j++) {

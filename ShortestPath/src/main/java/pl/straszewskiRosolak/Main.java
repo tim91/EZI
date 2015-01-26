@@ -4,7 +4,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			Instance ins = Instance.getInstance("data/kroA200.tsp");
+			Instance ins = Instance.getInstance("data/kroA100.tsp.txt");
 
 			ins.createDistanceMatrix();
 
@@ -32,13 +32,20 @@ public class Main {
 			// System.out.println("Random: ");
 			// ran.solve(ins);
 
-			VertexPairAlg ver = new VertexPairAlg();
+			// VertexPairAlg ver = new VertexPairAlg();
+			// long st = System.currentTimeMillis();
+			// System.out.println("Vertex Pair: " + ver.solve(ins, 100)
+			// + " czas: " + (System.currentTimeMillis() - st) + " ms");
+			//
+			// EdgePairAlg edge = new EdgePairAlg();
+			// long st = System.currentTimeMillis();
+			// System.out.println("Egde switch: " + edge.solve(ins, 100)
+			// + " czas: " + (System.currentTimeMillis() - st) + " ms");
+
+			EdgePairKandAlg edgeKand = new EdgePairKandAlg();
 			long st = System.currentTimeMillis();
-			System.out.println("Vertex Pair: " + ver.solve(ins,100) + " czas: " + (System.currentTimeMillis() - st) + " ms");
-			
-			EdgePairAlg edge = new EdgePairAlg();
-			st = System.currentTimeMillis();
-			System.out.println("Egde switch: " + edge.solve(ins,100) + " czas: " + (System.currentTimeMillis() - st) + " ms");
+			System.out.println("Egde switch: " + edgeKand.solve(ins, 100)
+					+ " czas: " + (System.currentTimeMillis() - st) + " ms");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
