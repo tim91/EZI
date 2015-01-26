@@ -66,7 +66,6 @@ public class VertexPairAlg extends ZachlannyALg implements Algorithm {
 			else if(neightrour(pair)){
 				newCircut = circut - ins.getDistanceMatrix()[prevVertex_0][leftVertexIdx] - ins.getDistanceMatrix()[nextVertex_1][rightVertexIdx];
 				newCircut = newCircut + ins.getDistanceMatrix()[prevVertex_0][rightVertexIdx] + ins.getDistanceMatrix()[nextVertex_1][leftVertexIdx];
-				
 			}else{
 				int oldPrevEdge_0 = ins.getDistanceMatrix()[prevVertex_0][leftVertexIdx];
 				int oldNextEdge_0 = ins.getDistanceMatrix()[leftVertexIdx][nextVertex_0];
@@ -88,8 +87,8 @@ public class VertexPairAlg extends ZachlannyALg implements Algorithm {
 			if (newCircut < bestCircut) {
 				bestCircut = newCircut;
 				bestSolution = new ArrayList<Integer>(solution);
-				if (!pairOfFirstAndLast(ins, pair))
-					revert(bestSolution, pair[0], pair[1]);
+//				if (!pairOfFirstAndLast(ins, pair))
+//					revert(bestSolution, pair[0], pair[1]);
 				Collections.swap(bestSolution, pair[0], pair[1]);
 				// od razu polepszam
 				solution = bestSolution;
