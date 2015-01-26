@@ -45,25 +45,46 @@ public class VertexPairAlg extends ZachlannyALg implements Algorithm {
 		List<Integer> bestSolution = solution;
 		int bestCircut = circut;
 		for (Integer[] pair : pairs) {
-			int prevVertex = getPrevVertex(pair[0], solution);
-			int nextVertex = getNextVertex(pair[1], solution);
+			
+			int prevVertex_0 = getPrevVertex(pair[0], solution);
+			int nextVertex_0 = getNextVertex(pair[0], solution);
+			int prevVertex_1 = getPrevVertex(pair[1], solution);
+			int nextVertex_1 = getNextVertex(pair[1], solution);
+			
 			int leftVertexIdx = solution.get(pair[0]);
 			int rightVertexIdx = solution.get(pair[1]);
+			
+			int newCircut = 0;
+			
 			if (pairOfFirstAndLast(ins, pair)) {
-				prevVertex = getPrevVertex(pair[1], solution);
-				nextVertex = getNextVertex(pair[0], solution);
-				int tmp = leftVertexIdx;
-				leftVertexIdx = rightVertexIdx;
-				rightVertexIdx = tmp;
+//				int tmp = leftVertexIdx;
+//				leftVertexIdx = rightVertexIdx;
+//				rightVertexIdx = tmp;
+				newCircut = circut - ins.getDistanceMatrix()[leftVertexIdx][nextVertex_0] - ins.getDistanceMatrix()[prevVertex_1][rightVertexIdx];
+				newCircut = newCircut + ins.getDistanceMatrix()[nextVertex_0][rightVertexIdx] + ins.getDistanceMatrix()[prevVertex_1][leftVertexIdx];
 			}
-			int oldPrevEdge = ins.getDistanceMatrix()[prevVertex][leftVertexIdx];
-			int oldNextEdge = ins.getDistanceMatrix()[rightVertexIdx][nextVertex];
+			else if(neightrour(pair)){
+				newCircut = circut - ins.getDistanceMatrix()[prevVertex_0][leftVertexIdx] - ins.getDistanceMatrix()[nextVertex_1][rightVertexIdx];
+				newCircut = newCircut + ins.getDistanceMatrix()[prevVertex_0][rightVertexIdx] + ins.getDistanceMatrix()[nextVertex_1][leftVertexIdx];
+				
+			}else{
+				int oldPrevEdge_0 = ins.getDistanceMatrix()[prevVertex_0][leftVertexIdx];
+				int oldNextEdge_0 = ins.getDistanceMatrix()[leftVertexIdx][nextVertex_0];
+				
+				int oldPrevEdge_1 = ins.getDistanceMatrix()[prevVertex_1][rightVertexIdx];
+				int oldNextEdge_1 = ins.getDistanceMatrix()[rightVertexIdx][nextVertex_1];
 
-			int newPrevEdge = ins.getDistanceMatrix()[prevVertex][rightVertexIdx];
-			int newNextEdge = ins.getDistanceMatrix()[leftVertexIdx][nextVertex];
+				int newPrevEdge_0 = ins.getDistanceMatrix()[prevVertex_0][rightVertexIdx];
+				int newNextEdge_0 = ins.getDistanceMatrix()[rightVertexIdx][nextVertex_0];
+				
+				int newPrevEdge_1 = ins.getDistanceMatrix()[prevVertex_1][leftVertexIdx];
+				int newNextEdge_1 = ins.getDistanceMatrix()[leftVertexIdx][nextVertex_1];
 
-			int newCircut = circut - oldPrevEdge - oldNextEdge + newPrevEdge
-					+ newNextEdge;
+				newCircut = circut - oldPrevEdge_0 - oldNextEdge_0 - oldPrevEdge_1 - oldNextEdge_1
+						+ newPrevEdge_0 + newNextEdge_0 + newPrevEdge_1 + newNextEdge_1;
+			}
+			
+			
 			if (newCircut < bestCircut) {
 				bestCircut = newCircut;
 				bestSolution = new ArrayList<Integer>(solution);
@@ -82,6 +103,10 @@ public class VertexPairAlg extends ZachlannyALg implements Algorithm {
 
 	private boolean pairOfFirstAndLast(Instance ins, Integer[] pair) {
 		return (pair[0] == 0 && pair[1] == ins.getData().size() - 1);
+	}
+	
+	private boolean neightrour(Integer [] pair){
+		return pair[0] + 1 == pair[1];
 	}
 
 	List<Integer> revert(List<Integer> bestSolution, int start, int end) {
