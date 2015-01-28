@@ -62,6 +62,27 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 		// return bestCircut;
 	}
 
+	public SolutionCandidate solve(Instance ins, SolutionCandidate startSolution){
+		int size = ins.getData().size();
+		List<Integer[]> pairs = generatePairs(size, ins);
+		List<Integer> bestSolution = startSolution.solution;
+		int bestCircut = startSolution.circuit;
+		int circut = 0;
+		do {
+			circut = bestCircut;
+			Object[] result = solve(circut, bestSolution, pairs, ins);
+			bestSolution = (List<Integer>) result[0];
+			bestCircut = (int) result[1];
+		} while (bestCircut < circut);
+		
+		SolutionCandidate sc = new SolutionCandidate();
+		sc.circuit = bestCircut;
+		sc.solution = bestSolution;
+		sc.createConnArray();
+		return sc;
+		
+	}
+	
 	Object[] solve(int circut, List<Integer> solution, List<Integer[]> pairs,
 			Instance ins) {
 		List<Integer> bestSolution = solution;
@@ -158,7 +179,7 @@ public class EdgePairAlg extends ZachlannyALg implements Algorithm {
 	protected List<Integer[]> generatePairs(int size, Instance ins) {
 		List<Integer[]> pairs = new ArrayList<Integer[]>();
 		for (int i = 0; i < size; i++) {
-			for (int j = i + 2; j < size; j++) {
+			for (int j = i; j < size; j++) {
 
 				if (j == size - 1 && i == 0) {
 					continue;

@@ -42,10 +42,26 @@ public class Main {
 			// System.out.println("Egde switch: " + edge.solve(ins, 100)
 			// + " czas: " + (System.currentTimeMillis() - st) + " ms");
 
-			EdgePairKandAlg edgeKand = new EdgePairKandAlg();
+//			EdgePairKandAlg edgeKand = new EdgePairKandAlg();
+//			long st = System.currentTimeMillis();
+//			System.out.println("Egde switch: " + edgeKand.solve(ins, 100)
+//					+ " czas: " + (System.currentTimeMillis() - st) + " ms");
+			
+			
+			
 			long st = System.currentTimeMillis();
-			System.out.println("Egde switch: " + edgeKand.solve(ins, 100)
-					+ " czas: " + (System.currentTimeMillis() - st) + " ms");
+			PopulationAlg pa = new PopulationAlg();
+			System.out.println("Population min: "+pa.solve(ins, 20,1000)+ " czas: " + (System.currentTimeMillis() - st) + " ms");
+			//sprawdzenie
+			int circuit = 0;
+			SolutionCandidate sc = pa.getBestSolution();
+			for(int i=0; i< sc.solution.size()-1; i++){
+				circuit += ins.getDistanceMatrix()[sc.solution.get(i)][sc.solution.get(i+1)];
+			}
+			circuit += ins.getDistanceMatrix()[sc.solution.get(0)][sc.solution.get(pa.getBestSolution().solution.size()-1)];
+			System.out.println("Dlugość: " + circuit);
+			sc.print();
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
