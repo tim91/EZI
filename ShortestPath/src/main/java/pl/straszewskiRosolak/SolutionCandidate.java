@@ -2,8 +2,9 @@ package pl.straszewskiRosolak;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class SolutionCandidate extends VertexPairAlg  implements Comparable<SolutionCandidate>{
+public class SolutionCandidate implements Comparable<SolutionCandidate>{
 	
 	public int circuit = 0;
 	public List<Integer> solution;
@@ -22,11 +23,12 @@ public class SolutionCandidate extends VertexPairAlg  implements Comparable<Solu
 		
 		solution = new ArrayList<Integer>();
 		connArray = new int[ins.getData().size()][ins.getData().size()];
+		Random r = new Random();
 		int startVertex = r.nextInt(ins.getData().size());
 		solution.add(startVertex);
 		int prev = startVertex;
 		for (int i = 1; i < ins.getData().size(); i++) {
-			int next = randVertex(ins, solution);
+			int next = Utils.getRandomVertex(ins, solution,r);
 			solution.add(next);
 			circuit += ins.getDistanceMatrix()[prev][next];
 			prev = next;

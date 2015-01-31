@@ -20,8 +20,8 @@ public class PopulationAlgTest {
 			ins = Instance.getInstance(is);
 			ins.createDistanceMatrix();
 			
-			PopulationAlg p = new PopulationAlg();
-			Population ss = p.generatePopulation(ins, 5);
+			HybridAlgorithm p = new HybridAlgorithm();
+			PopulationTreeSet ss = p.generatePopulation(ins, 5);
 			
 			Assert.assertEquals(5, ss.size());
 			
@@ -49,8 +49,8 @@ public class PopulationAlgTest {
 			Instance ins = Instance.getInstance("data/kroA100.tsp.txt");
 			ins.createDistanceMatrix();
 			
-			PopulationAlg p = new PopulationAlg();
-			Population ss = p.generatePopulation(ins, 20);
+			HybridAlgorithm p = new HybridAlgorithm();
+			PopulationTreeSet ss = p.generatePopulation(ins, 20);
 			
 			SolutionCandidate p1 = ss.first();
 			SolutionCandidate p2 = ss.last();

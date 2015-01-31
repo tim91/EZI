@@ -14,7 +14,7 @@ public class NNTest {
 		ins.createDistanceMatrix();
 		ins.printDistanceMatrix();
 
-		ZachlannyALg alg = new ZachlannyALg();
+		NearestNeighborAlgorithm alg = new NearestNeighborAlgorithm();
 
 		int sum = alg.solve(ins, 0);
 
@@ -32,7 +32,7 @@ public class NNTest {
 		ins.createDistanceMatrix();
 		ins.printDistanceMatrix();
 
-		GCDrugiAlg alg = new GCDrugiAlg();
+		GreedyCycleAlgorithm alg = new GreedyCycleAlgorithm();
 
 		int sum = alg.solve(ins, 0);
 
@@ -49,7 +49,7 @@ public class NNTest {
 		ins.createDistanceMatrix();
 		ins.printDistanceMatrix();
 		System.out.println("--------------");
-		GCDrugiAlg alg = new GCDrugiAlg();
+		GreedyCycleAlgorithm alg = new GreedyCycleAlgorithm();
 
 		alg.solve(ins);
 	}

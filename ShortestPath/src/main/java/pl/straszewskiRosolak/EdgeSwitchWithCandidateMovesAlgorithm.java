@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class EdgePairKandAlg extends EdgePairAlg {
+public class EdgeSwitchWithCandidateMovesAlgorithm extends EdgeSwitchAlgorithm {
 
 	protected List<Integer[]> generatePairs(int size, Instance ins) {
 		List<Integer[]> pairs = new ArrayList<Integer[]>();

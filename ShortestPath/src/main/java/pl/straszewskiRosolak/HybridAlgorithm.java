@@ -5,25 +5,45 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
-public class PopulationAlg{
+public class HybridAlgorithm extends EdgeSwitchAlgorithm{
 	
-	private Random r = new Random();
+	private PopulationTreeSet mainPopulation;
 	
-	private Population mainPopulation;
+	private int populationSize;
+	private int iterations;
 	
 	public SolutionCandidate getBestSolution(){
 		return this.mainPopulation.first();
 	}
 	
+	@Override
+	public int solve(Instance ins, int iterationsToTest) {
+		int minLength = Integer.MAX_VALUE;
+		int maxLength = Integer.MIN_VALUE;
+		int sum = 0;
+		for (int i = 0; i < iterationsToTest; i++) {
+			int length = solve(ins, this.populationSize, this.iterations);
+			if (length < minLength) {
+				minLength = length;
+			}
+			if (length > maxLength) {
+				maxLength = length;
+			}
+			sum += length;
+		}
+		double avg = (double) sum / (double) iterationsToTest;
+		System.out.println("Min: " + minLength);
+		System.out.println("Max: " + maxLength);
+		System.out.println("Avg: " + avg);
+		return minLength;
+	}
+	
 	public int solve(Instance ins, int populationSize, int iterations) {
 		
-		
-		//wygeneruje dwadzieścia losowych rozwiązań i umieśc je na liscie
-		Population population = generatePopulation(ins, populationSize);
-		EdgePairAlg edgePairAlg = new EdgePairAlg();
+		//wygeneruj populationSize losowych rozwiązań i umieść je na liscie
+		PopulationTreeSet population = generatePopulation(ins, populationSize);
 		
 		for(int iter = 0; iter < iterations; iter ++){
 			//wylosuj dwa rozwiązania
@@ -34,13 +54,14 @@ public class PopulationAlg{
 				secondSolIdx = r.nextInt(populationSize);
 			}while(firstSolIdx == secondSolIdx);
 			
-			//znajdz czesc wspolna dla rozwiazan
+			//znajdź część wspólną dla rozwiązań
 			SolutionCandidate mergedSolution = mergeSolutionsAndCreateNew(getSolution(population,firstSolIdx), getSolution(population, secondSolIdx), ins);
 			
 			//optymalizuj
-			SolutionCandidate optimizedSolution = edgePairAlg.solve(ins, mergedSolution);
-			//usun najgorsze rozwiazanie z populacji
+			SolutionCandidate optimizedSolution = solve(ins, mergedSolution);
+			//usuń najgorsze rozwiazanie z populacji
 			population.pollLast();
+			//dodaj nowo wygenerowane rozwiązanie do populacji
 			population.add(optimizedSolution);
 		}
 		
@@ -49,7 +70,29 @@ public class PopulationAlg{
 		
 	}
 	
-	private SolutionCandidate getSolution(Population sols, int idx){
+	@SuppressWarnings("unchecked")
+	public SolutionCandidate solve(Instance ins, SolutionCandidate startSolution){
+		int size = ins.getData().size();
+		List<Integer[]> pairs = generatePairs(size);
+		List<Integer> bestSolution = startSolution.solution;
+		int bestCircut = startSolution.circuit;
+		int circut = 0;
+		do {
+			circut = bestCircut;
+			Object[] result = solve(circut, bestSolution, pairs, ins);
+			bestSolution = (List<Integer>) result[0];
+			bestCircut = (int) result[1];
+		} while (bestCircut < circut);
+		
+		SolutionCandidate sc = new SolutionCandidate();
+		sc.circuit = bestCircut;
+		sc.solution = bestSolution;
+		sc.createConnArray();
+		return sc;
+		
+	}
+	
+	private SolutionCandidate getSolution(PopulationTreeSet sols, int idx){
 		if(idx == 0)
 			return sols.first();
 		
@@ -83,9 +126,7 @@ public class PopulationAlg{
 			sc.solution.addAll(list);
 		}
 		
-		//FIXME policz obwod, na etapie znajdywania wspolnych podcciagow powinna byc trzymana dotychczasowa dlugosc
 		if(sc.solution.size() > 100){
-			System.out.println();
 			sc.solution.remove(0);
 		}
 		for(int i=0; i< sc.solution.size()-1; i++){
@@ -99,15 +140,6 @@ public class PopulationAlg{
 	
 	public List<List<Integer>> findCommonConnections(SolutionCandidate s1,
 			SolutionCandidate s2) {
-//		System.out.println("----------------------------");
-//		for(int i=0; i< s1.solution.size(); i++){
-//			System.out.print(" " + s1.solution.get(i));
-//		}
-//		System.out.println();
-//		for(int i=0; i< s2.solution.size(); i++){
-//			System.out.print(" " + s2.solution.get(i));
-//		}
-//		System.out.println();
 		
 		List<List<Integer>> elems = new ArrayList<List<Integer>>();
 		Set<Integer> saw = new HashSet<Integer>();
@@ -128,7 +160,6 @@ public class PopulationAlg{
 			elem.add(currVertex);
 			saw.add(currVertex);
 			GLOBAL_LOOP: while(true){
-				int tempCurr = currVertex;
 				boolean notFound = true;
 
 				LOCAL_LOOP: for(int j=0; j<s1.connArray[currVertex].length;j++){
@@ -144,12 +175,10 @@ public class PopulationAlg{
 					if(j == currVertex || saw.contains(j)) continue;
 					
 					if(s1.connArray[currVertex][j] == 1 && s2.connArray[currVertex][j] == 1){
-//						if(elem.get(elems.size()-1) != j){
 							elem.add(j);
 							saw.add(j);
 							currVertex = j;
 							notFound = false;
-//						}
 						
 						break LOCAL_LOOP;
 					}
@@ -166,23 +195,22 @@ public class PopulationAlg{
 		
 		return elems;
 	}
-
-	private boolean theSamePair(int l1, int r1, int l2, int r2){
-		if(l1 == l2 && r1 == r2)
-			return true;
-		
-		if(l1 == r2 && r1 == l2)
-			return true;
-		
-		return false;
-	}
 	
-	public Population generatePopulation(Instance ins, int size){
-		Population population = new Population();
+	public PopulationTreeSet generatePopulation(Instance ins, int size){
+		PopulationTreeSet population = new PopulationTreeSet();
 		for(int i=0; i<size; i++ ){
 			population.add(new SolutionCandidate(ins));
 		}
 		return population;
 	}
 
+	public void setPopulationSize(int populationSize) {
+		this.populationSize = populationSize;
+	}
+
+	public void setIterations(int iterations) {
+		this.iterations = iterations;
+	}
+
+	
 }
