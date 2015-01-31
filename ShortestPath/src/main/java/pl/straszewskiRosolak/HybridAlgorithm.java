@@ -126,7 +126,7 @@ public class HybridAlgorithm extends EdgeSwitchAlgorithm{
 			sc.solution.addAll(list);
 		}
 		
-		if(sc.solution.size() > 100){
+		if(sc.solution.size() == ins.data.size()+1){
 			sc.solution.remove(0);
 		}
 		for(int i=0; i< sc.solution.size()-1; i++){

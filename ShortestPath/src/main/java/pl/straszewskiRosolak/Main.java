@@ -4,7 +4,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			 Instance ins = Instance.getInstance("data/kroA100.tsp.txt");
+//			 Instance ins = Instance.getInstance("data/kroA100.tsp.txt");
+			 Instance ins = Instance.getInstance("data/kroA200.tsp");
 
 			 ins.createDistanceMatrix();
 
@@ -41,7 +42,7 @@ public class Main {
 			HybridAlgorithm ha = new HybridAlgorithm();
 			ha.setIterations(1000);
 			ha.setPopulationSize(20);
-			ha.solve(ins,10);
+			ha.solve(ins,1);
 			System.out.println("HybridAlgorithm, czas: " + (System.currentTimeMillis() - st) + " ms");
 			
 			
